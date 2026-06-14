@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Defines the character encoding so text displays correctly -->
+  <meta charset="UTF-8">
+
+  <!-- Makes the page responsive on phones, tablets, and desktops -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Browser tab title -->
+  <title>Detailed Notes: Version Control Systems</title>
+
+  <!-- Internal CSS for dark reader-friendly design -->
+  <style>
+    /* Applies smooth scrolling when clicking internal page links */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Main page styling */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.7;
+      background-color: #0f172a;
+      color: #e5e7eb;
+    }
+
+    /* Main wrapper that centers the note content */
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* Header section styling */
+    .hero {
+      background: linear-gradient(135deg, #1e293b, #111827);
+      border: 1px solid #334155;
+      border-radius: 18px;
+      padding: 32px;
+      margin-bottom: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Main title styling */
+    h1 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      color: #f8fafc;
+      font-size: 2.2rem;
+      line-height: 1.2;
+    }
+
+    /* Subtitle under the main title */
+    .subtitle {
+      color: #cbd5e1;
+      font-size: 1.05rem;
+      margin-bottom: 0;
+    }
+
+    /* Section card styling */
+    section {
+      background-color: #111827;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 26px;
+      margin-bottom: 22px;
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Section heading styling */
+    h2 {
+      color: #93c5fd;
+      margin-top: 0;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 10px;
+    }
+
+    /* Smaller heading styling */
+    h3 {
+      color: #bfdbfe;
+      margin-top: 24px;
+    }
+
+    /* Paragraph text color */
+    p {
+      color: #d1d5db;
+    }
+
+    /* Strong text highlighting */
+    strong {
+      color: #f8fafc;
+    }
+
+    /* Unordered list styling */
+    ul {
+      padding-left: 24px;
+    }
+
+    /* List item spacing */
+    li {
+      margin-bottom: 10px;
+      color: #d1d5db;
+    }
+
+    /* Inline code-like text styling */
+    code {
+      background-color: #020617;
+      color: #facc15;
+      padding: 3px 6px;
+      border-radius: 6px;
+      font-size: 0.95em;
+    }
+
+    /* Highlight box for important points */
+    .highlight {
+      background-color: #0b253f;
+      border-left: 5px solid #38bdf8;
+      padding: 16px;
+      border-radius: 10px;
+      margin: 18px 0;
+      color: #e0f2fe;
+    }
+
+    /* Warning or disadvantage box */
+    .warning {
+      background-color: #3b1d1d;
+      border-left: 5px solid #f87171;
+      padding: 16px;
+      border-radius: 10px;
+      margin: 18px 0;
+      color: #fee2e2;
+    }
+
+    /* Success or advantage box */
+    .success {
+      background-color: #102a1c;
+      border-left: 5px solid #4ade80;
+      padding: 16px;
+      border-radius: 10px;
+      margin: 18px 0;
+      color: #dcfce7;
+    }
+
+    /* Grid layout for comparison cards */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    /* Individual card styling */
+    .card {
+      background-color: #020617;
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    /* Table wrapper for horizontal scrolling on small screens */
+    .table-wrapper {
+      overflow-x: auto;
+      margin-top: 18px;
+    }
+
+    /* Table styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+    }
+
+    /* Table cell styling */
+    th,
+    td {
+      border: 1px solid #334155;
+      padding: 14px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    /* Table header styling */
+    th {
+      background-color: #1e3a8a;
+      color: #ffffff;
+    }
+
+    /* Table row styling */
+    td {
+      background-color: #020617;
+      color: #d1d5db;
+    }
+
+    /* Makes every second table row slightly different */
+    tr:nth-child(even) td {
+      background-color: #0f172a;
+    }
+
+    /* Simple footer styling */
+    .footer {
+      text-align: center;
+      color: #94a3b8;
+      padding: 24px;
+      font-weight: bold;
+    }
+
+    /* Responsive design for smaller screens */
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding: 24px;
+      }
+
+      section {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Main content container -->
+  <main class="container">
+
+    <!-- Intro banner -->
+    <header class="hero">
+      <h1>Version Control Systems</h1>
+
+      <p class="subtitle">
+        Detailed notes on how developers track code changes, collaborate safely,
+        and manage project history using centralized and distributed version control systems.
+      </p>
+    </header>
+
+    <!-- What is version control -->
+    <section>
+      <h2>1. What Is Version Control?</h2>
+
+      <p>
+        <strong>Version control</strong> is a system that helps developers track,
+        manage, and store changes made to source code over time.
+      </p>
+
+      <p>
+        When developers work on software, the code is constantly changing. New features
+        are added, bugs are fixed, files are updated, and old code may be removed.
+        In a team environment, several developers may work on the same codebase at
+        the same time.
+      </p>
+
+      <div class="highlight">
+        Version control makes it easier to know who changed the code, what was changed,
+        when it was changed, and why the change was made.
+      </div>
+
+      <p>
+        Without version control, teams may accidentally overwrite each other’s work,
+        lose important code, or struggle to find the source of a bug. Version control
+        solves these problems by keeping a history of changes.
+      </p>
+    </section>
+
+    <!-- Why version control is important -->
+    <section>
+      <h2>2. Why Developers Use Version Control</h2>
+
+      <p>
+        Version control is important because software development is rarely done by
+        one person in isolation. In real projects, developers usually collaborate in
+        teams and work on different tasks at the same time.
+      </p>
+
+      <ul>
+        <li>
+          One developer may be building a new feature.
+        </li>
+
+        <li>
+          Another developer may be fixing a bug.
+        </li>
+
+        <li>
+          Another developer may be improving performance.
+        </li>
+
+        <li>
+          Another developer may be updating documentation.
+        </li>
+      </ul>
+
+      <p>
+        All these changes need to be organized carefully. Version control allows teams
+        to combine changes, compare versions, recover older code, and understand the
+        history of a project.
+      </p>
+
+      <div class="success">
+        In simple words, version control acts like a memory system for your codebase.
+      </div>
+    </section>
+
+    <!-- Examples -->
+    <section>
+      <h2>3. Examples of Version Control Systems</h2>
+
+      <p>
+        There are many version control systems available. Some are older and centralized,
+        while others are modern and distributed.
+      </p>
+
+      <ul>
+        <li>
+          <strong>Subversion:</strong> A centralized version control system, often called SVN.
+        </li>
+
+        <li>
+          <strong>Perforce:</strong> A version control system often used in large enterprise
+          or game development projects.
+        </li>
+
+        <li>
+          <strong>AWS CodeCommit:</strong> A source control service provided by Amazon Web Services.
+        </li>
+
+        <li>
+          <strong>Mercurial:</strong> A distributed version control system.
+        </li>
+
+        <li>
+          <strong>Git:</strong> A popular distributed version control system used by many developers.
+        </li>
+      </ul>
+
+      <div class="highlight">
+        Git is one of the most widely used version control systems today.
+      </div>
+    </section>
+
+    <!-- Two categories -->
+    <section>
+      <h2>4. Two Main Types of Version Control Systems</h2>
+
+      <p>
+        Version control systems can be divided into two main categories:
+      </p>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Centralized Version Control System</h3>
+
+          <p>
+            A centralized system stores the main project history on a central server.
+            Developers connect to that server to get code and submit changes.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Distributed Version Control System</h3>
+
+          <p>
+            A distributed system gives every developer a complete copy of the repository,
+            including the full project history.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CVCS -->
+    <section>
+      <h2>5. Centralized Version Control Systems</h2>
+
+      <p>
+        A <strong>Centralized Version Control System</strong>, also called
+        <strong>CVCS</strong>, works using a <strong>server and client</strong> model.
+      </p>
+
+      <p>
+        The <strong>server</strong> contains the main repository. This repository stores
+        the full history of the project. Developers use their computers as
+        <strong>clients</strong> to connect to the server and access the latest code.
+      </p>
+
+      <h3>How CVCS Works</h3>
+
+      <ul>
+        <li>
+          The main repository is stored on a central server.
+        </li>
+
+        <li>
+          Developers pull the latest version of the code from the server.
+        </li>
+
+        <li>
+          The developer gets a working copy on their local machine.
+        </li>
+
+        <li>
+          The local machine usually has the latest code, but not always the full history.
+        </li>
+
+        <li>
+          To view history, update code, or submit changes, the developer often needs
+          to connect to the server.
+        </li>
+
+        <li>
+          After making changes, the developer pushes or commits those changes back
+          to the central server.
+        </li>
+      </ul>
+
+      <div class="highlight">
+        In CVCS, the central server is the main source of truth for the project.
+      </div>
+
+      <h3>Simple Example</h3>
+
+      <p>
+        Imagine a team is using a centralized system. The project lives on one main
+        server. Each developer downloads a working copy of the project. After making
+        changes, they send those changes back to the same server.
+      </p>
+
+      <p>
+        Other developers must connect to the server to receive those updates.
+      </p>
+
+      <h3>Advantages of CVCS</h3>
+
+      <div class="success">
+        CVCS can be easier for beginners because there is one main repository and
+        one central place where the project history is stored.
+      </div>
+
+      <ul>
+        <li>
+          <strong>Easier to understand:</strong> The workflow is usually simple because
+          there is one central server.
+        </li>
+
+        <li>
+          <strong>Better centralized access control:</strong> Administrators can control
+          who can access the server and what permissions each user has.
+        </li>
+
+        <li>
+          <strong>Clear central copy:</strong> Everyone knows that the main version of
+          the project is stored on the central server.
+        </li>
+      </ul>
+
+      <h3>Disadvantages of CVCS</h3>
+
+      <div class="warning">
+        CVCS depends heavily on the central server. If the server is slow or unavailable,
+        developers may not be able to perform important actions.
+      </div>
+
+      <ul>
+        <li>
+          <strong>Needs server connection:</strong> Many operations require access to
+          the central server.
+        </li>
+
+        <li>
+          <strong>Can be slower:</strong> Since actions often need the server, performance
+          can depend on network speed.
+        </li>
+
+        <li>
+          <strong>Limited offline work:</strong> Developers may not be able to view
+          full history or perform some actions without being connected.
+        </li>
+
+        <li>
+          <strong>Single point of failure:</strong> If the server has problems, the whole
+          team can be affected.
+        </li>
+      </ul>
+    </section>
+
+    <!-- DVCS -->
+    <section>
+      <h2>6. Distributed Version Control Systems</h2>
+
+      <p>
+        A <strong>Distributed Version Control System</strong>, also called
+        <strong>DVCS</strong>, works differently from the centralized model.
+      </p>
+
+      <p>
+        In a distributed system, every developer gets a complete copy of the project.
+        This includes the files, commits, branches, and full history of changes.
+      </p>
+
+      <div class="highlight">
+        In DVCS, every developer’s local machine acts like a complete repository.
+      </div>
+
+      <h3>How DVCS Works</h3>
+
+      <ul>
+        <li>
+          Developers clone or pull the repository from a remote server.
+        </li>
+
+        <li>
+          The full project history is copied to the developer’s local machine.
+        </li>
+
+        <li>
+          Developers can make changes locally.
+        </li>
+
+        <li>
+          Developers can view history without connecting to the server.
+        </li>
+
+        <li>
+          Developers can create commits while offline.
+        </li>
+
+        <li>
+          A connection is mainly needed when pulling new changes or pushing local changes.
+        </li>
+      </ul>
+
+      <h3>Simple Example</h3>
+
+      <p>
+        Imagine a team using Git. Each developer has a complete copy of the project
+        on their own computer. They can make commits, check previous versions, and
+        inspect history even without internet access.
+      </p>
+
+      <p>
+        When they are ready to share their work, they push their changes to a remote
+        repository such as GitHub, GitLab, Bitbucket, or another Git server.
+      </p>
+
+      <h3>Advantages of DVCS</h3>
+
+      <div class="success">
+        DVCS is powerful because developers can work independently and offline while
+        still keeping full project history.
+      </div>
+
+      <ul>
+        <li>
+          <strong>Offline work:</strong> Developers can commit changes and view history
+          without an internet connection.
+        </li>
+
+        <li>
+          <strong>Better speed:</strong> Many operations are fast because they happen
+          locally on the developer’s machine.
+        </li>
+
+        <li>
+          <strong>Full history everywhere:</strong> Every developer has a complete copy
+          of the repository history.
+        </li>
+
+        <li>
+          <strong>Improved collaboration:</strong> Developers can work on separate branches
+          and later merge their changes.
+        </li>
+
+        <li>
+          <strong>Better backup:</strong> Since many developers have full copies of the
+          repository, the project history is not stored in only one place.
+        </li>
+      </ul>
+
+      <h3>Disadvantages of DVCS</h3>
+
+      <div class="warning">
+        DVCS can feel harder at first because developers need to understand concepts
+        such as commits, branches, merging, cloning, pulling, and pushing.
+      </div>
+
+      <ul>
+        <li>
+          <strong>Harder learning curve:</strong> Distributed systems can be more complex
+          for beginners.
+        </li>
+
+        <li>
+          <strong>More concepts to understand:</strong> Developers need to learn local
+          repositories, remote repositories, branches, merges, and conflict resolution.
+        </li>
+
+        <li>
+          <strong>Repository size:</strong> Since the full history is copied locally,
+          very large repositories can take more disk space.
+        </li>
+      </ul>
+    </section>
+
+    <!-- Comparison -->
+    <section>
+      <h2>7. CVCS vs DVCS Comparison</h2>
+
+      <p>
+        Both centralized and distributed version control systems help developers manage
+        source code changes. However, they differ in how they store history and how
+        developers interact with the repository.
+      </p>
+
+      <div class="table-wrapper">
+        <table>
+          <tr>
+            <th>Feature</th>
+            <th>CVCS</th>
+            <th>DVCS</th>
+          </tr>
+
+          <tr>
+            <td>Meaning</td>
+            <td>Centralized Version Control System</td>
+            <td>Distributed Version Control System</td>
+          </tr>
+
+          <tr>
+            <td>Main Repository</td>
+            <td>Stored on one central server</td>
+            <td>Stored on a server and copied fully to each developer’s machine</td>
+          </tr>
+
+          <tr>
+            <td>Project History</td>
+            <td>Usually stored mainly on the central server</td>
+            <td>Stored fully on every developer’s local machine</td>
+          </tr>
+
+          <tr>
+            <td>Local Machine</td>
+            <td>Usually contains only a working copy</td>
+            <td>Contains a full repository with complete history</td>
+          </tr>
+
+          <tr>
+            <td>Internet or Server Connection</td>
+            <td>Needed for many operations</td>
+            <td>Needed mainly for pulling and pushing changes</td>
+          </tr>
+
+          <tr>
+            <td>Offline Work</td>
+            <td>Limited offline support</td>
+            <td>Strong offline support</td>
+          </tr>
+
+          <tr>
+            <td>Speed</td>
+            <td>Can be slower because it depends more on the server</td>
+            <td>Usually faster because many operations are local</td>
+          </tr>
+
+          <tr>
+            <td>Learning Difficulty</td>
+            <td>Usually easier to learn</td>
+            <td>Can be harder at first</td>
+          </tr>
+
+          <tr>
+            <td>Access Control</td>
+            <td>Strong centralized access control</td>
+            <td>Access control depends on the remote hosting system and workflow</td>
+          </tr>
+
+          <tr>
+            <td>Examples</td>
+            <td>Subversion, Perforce</td>
+            <td>Git, Mercurial</td>
+          </tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- Important Git terms -->
+    <section>
+      <h2>8. Important Terms to Remember</h2>
+
+      <ul>
+        <li>
+          <strong>Repository:</strong> A storage location for project files and version history.
+        </li>
+
+        <li>
+          <strong>Working copy:</strong> The copy of the project files that a developer edits
+          on their own machine.
+        </li>
+
+        <li>
+          <strong>Commit:</strong> A saved record of changes made to the code.
+        </li>
+
+        <li>
+          <strong>Pull:</strong> Getting the latest changes from a server or remote repository.
+        </li>
+
+        <li>
+          <strong>Push:</strong> Sending your local changes to a server or remote repository.
+        </li>
+
+        <li>
+          <strong>History:</strong> The record of all changes made to the project over time.
+        </li>
+
+        <li>
+          <strong>Server:</strong> A machine or service that stores the repository for team access.
+        </li>
+
+        <li>
+          <strong>Client:</strong> A developer’s local machine that connects to the server.
+        </li>
+      </ul>
+    </section>
+
+    <!-- Final summary -->
+    <section>
+      <h2>9. Final Summary</h2>
+
+      <p>
+        Version control systems are essential tools in software development. They help
+        developers track changes, collaborate with others, manage project history, and
+        recover older versions of code when needed.
+      </p>
+
+      <p>
+        <strong>Centralized version control systems</strong> use one central server that
+        stores the main repository and project history. Developers connect to this server
+        to get code, view history, and submit changes.
+      </p>
+
+      <p>
+        <strong>Distributed version control systems</strong> give each developer a full
+        copy of the repository and its history. This makes it possible to work faster,
+        view history locally, and continue working even without a server connection.
+      </p>
+
+      <div class="highlight">
+        The key difference is this: CVCS keeps the full project history mainly on the
+        central server, while DVCS gives every developer a full copy of the project history.
+      </div>
+    </section>
+
+    <!-- Footer message -->
+    <footer class="footer">
+      Well done! You now understand the difference between centralized and distributed version control systems.
+    </footer>
+
+  </main>
+</body>
+</html>
