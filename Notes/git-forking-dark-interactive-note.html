@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Basic page metadata. -->
+  <meta charset="UTF-8" />
+  <!-- Mobile-friendly layout setting. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Browser tab title. -->
+  <title>Git Forking Dark Interactive Notes</title>
+
+  <!-- Internal CSS keeps the note portable and offline-friendly. -->
+  <style>
+    /* Dark theme color system. */
+    :root {
+      --bg: #050814;
+      --bg-2: #070d1d;
+      --surface: #0d1426;
+      --surface-2: #111b31;
+      --surface-3: #17213a;
+      --text: #f8fafc;
+      --muted: #b8c4d6;
+      --soft: #8793a7;
+      --border: #273650;
+      --border-strong: #40516e;
+      --primary: #7dd3fc;
+      --primary-2: #38bdf8;
+      --accent: #a78bfa;
+      --accent-2: #fbbf24;
+      --good: #4ade80;
+      --bad: #fb7185;
+      --warn: #f59e0b;
+      --code-bg: #020617;
+      --shadow: 0 26px 90px rgba(0, 0, 0, 0.42);
+      --radius: 22px;
+      --radius-sm: 14px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+
+    /* Smooth movement when clicking navigation links. */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Main page body styling. */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(125, 211, 252, 0.16), transparent 34%),
+        radial-gradient(circle at top right, rgba(167, 139, 250, 0.14), transparent 32%),
+        radial-gradient(circle at 50% 10%, rgba(251, 191, 36, 0.07), transparent 28%),
+        linear-gradient(140deg, var(--bg), var(--bg-2) 58%, #030712);
+      font-family: var(--font);
+      line-height: 1.65;
+    }
+
+    /* Universal box model. */
+    * {
+      box-sizing: border-box;
+    }
+
+    /* Page width container. */
+    .wrap {
+      width: min(1160px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    /* Header spacing. */
+    header {
+      padding: 48px 0 28px;
+    }
+
+    /* Hero card design. */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 32px;
+      padding: clamp(28px, 5vw, 48px);
+      background:
+        linear-gradient(145deg, rgba(17, 27, 49, 0.96), rgba(8, 13, 29, 0.96)),
+        radial-gradient(circle at 20% 20%, rgba(125, 211, 252, 0.12), transparent 35%);
+      box-shadow: var(--shadow);
+    }
+
+    /* Decorative glow in hero. */
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 420px;
+      height: 420px;
+      right: -160px;
+      top: -160px;
+      border-radius: 999px;
+      background: rgba(125, 211, 252, 0.12);
+      filter: blur(3px);
+    }
+
+    /* Hero content should stay above decoration. */
+    .hero > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Small label above title. */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 14px;
+      padding: 8px 13px;
+      border: 1px solid rgba(125, 211, 252, 0.32);
+      border-radius: 999px;
+      color: var(--primary);
+      background: rgba(125, 211, 252, 0.08);
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    /* Main heading. */
+    h1 {
+      margin: 0;
+      max-width: 900px;
+      font-size: clamp(2.3rem, 6vw, 5.1rem);
+      line-height: 1.02;
+      letter-spacing: -0.065em;
+    }
+
+    /* Section heading. */
+    h2 {
+      margin: 0 0 16px;
+      font-size: clamp(1.45rem, 3vw, 2.25rem);
+      line-height: 1.12;
+      letter-spacing: -0.035em;
+    }
+
+    /* Small heading. */
+    h3 {
+      margin: 0 0 10px;
+      font-size: 1.14rem;
+      line-height: 1.25;
+    }
+
+    /* Paragraph default. */
+    p {
+      margin: 0 0 14px;
+    }
+
+    /* Muted text utility. */
+    .muted {
+      color: var(--muted);
+    }
+
+    /* Soft text utility. */
+    .soft {
+      color: var(--soft);
+    }
+
+    /* Hero description. */
+    .lead {
+      max-width: 860px;
+      margin: 20px 0 0;
+      color: var(--muted);
+      font-size: 1.12rem;
+    }
+
+    /* Hero grid for summary cards. */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 26px;
+    }
+
+    /* Hero summary card. */
+    .hero-stat {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      background: rgba(2, 6, 23, 0.45);
+    }
+
+    /* Hero card label. */
+    .hero-stat span {
+      display: block;
+      color: var(--primary);
+      font-weight: 800;
+      font-size: 0.86rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* Hero card value. */
+    .hero-stat strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 1.08rem;
+    }
+
+    /* Sticky table of contents. */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(14px);
+      background: rgba(5, 8, 20, 0.78);
+      border-bottom: 1px solid rgba(39, 54, 80, 0.8);
+    }
+
+    /* Navigation row. */
+    .nav-row {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 12px 0;
+      scrollbar-width: thin;
+    }
+
+    /* Navigation links. */
+    .nav-row a {
+      flex: 0 0 auto;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(13, 20, 38, 0.88);
+      text-decoration: none;
+      font-size: 0.92rem;
+      font-weight: 760;
+      transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+    }
+
+    /* Navigation link hover. */
+    .nav-row a:hover {
+      border-color: rgba(125, 211, 252, 0.65);
+      color: var(--text);
+      background: rgba(125, 211, 252, 0.1);
+      transform: translateY(-1px);
+    }
+
+    /* Main layout spacing. */
+    main {
+      padding: 28px 0 64px;
+    }
+
+    /* Section spacing. */
+    section {
+      scroll-margin-top: 92px;
+      margin: 0 0 22px;
+    }
+
+    /* Standard dark card. */
+    .card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: clamp(20px, 3vw, 30px);
+      background: linear-gradient(180deg, rgba(17, 27, 49, 0.94), rgba(11, 18, 32, 0.94));
+      box-shadow: 0 18px 55px rgba(0, 0, 0, 0.24);
+    }
+
+    /* Grid helper. */
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    /* Two-column grid. */
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* Three-column grid. */
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    /* Mini card. */
+    .mini {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      background: rgba(2, 6, 23, 0.42);
+    }
+
+    /* Highlight card. */
+    .callout {
+      border: 1px solid rgba(125, 211, 252, 0.3);
+      border-radius: 18px;
+      padding: 18px;
+      background: rgba(125, 211, 252, 0.08);
+    }
+
+    /* Warning card. */
+    .warning {
+      border: 1px solid rgba(251, 191, 36, 0.36);
+      border-radius: 18px;
+      padding: 18px;
+      background: rgba(251, 191, 36, 0.08);
+    }
+
+    /* Success card. */
+    .success {
+      border: 1px solid rgba(74, 222, 128, 0.34);
+      border-radius: 18px;
+      padding: 18px;
+      background: rgba(74, 222, 128, 0.08);
+    }
+
+    /* Danger card. */
+    .danger {
+      border: 1px solid rgba(251, 113, 133, 0.32);
+      border-radius: 18px;
+      padding: 18px;
+      background: rgba(251, 113, 133, 0.08);
+    }
+
+    /* Inline badge. */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 9px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--primary);
+      background: rgba(125, 211, 252, 0.08);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* Keyboard-style inline code. */
+    code {
+      padding: 2px 6px;
+      border: 1px solid rgba(125, 211, 252, 0.17);
+      border-radius: 8px;
+      color: #dbeafe;
+      background: rgba(2, 6, 23, 0.65);
+      font-family: var(--mono);
+      font-size: 0.94em;
+    }
+
+    /* Code block wrapper. */
+    .code-wrap {
+      position: relative;
+      margin: 14px 0;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      background: var(--code-bg);
+    }
+
+    /* Code block header. */
+    .code-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--soft);
+      background: rgba(15, 23, 42, 0.85);
+      font-size: 0.84rem;
+      font-weight: 800;
+    }
+
+    /* Code block pre. */
+    pre {
+      margin: 0;
+      padding: 16px;
+      overflow-x: auto;
+      color: #e2e8f0;
+      font-family: var(--mono);
+      font-size: 0.94rem;
+      line-height: 1.6;
+    }
+
+    /* Copy button styling. */
+    .copy-btn,
+    .small-btn,
+    .choice,
+    .tab-btn,
+    .step-btn {
+      cursor: pointer;
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      color: var(--text);
+      background: rgba(125, 211, 252, 0.08);
+      font-family: inherit;
+      font-weight: 800;
+      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    }
+
+    /* General button hover state. */
+    .copy-btn:hover,
+    .small-btn:hover,
+    .choice:hover,
+    .tab-btn:hover,
+    .step-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(125, 211, 252, 0.72);
+      background: rgba(125, 211, 252, 0.14);
+    }
+
+    /* Copy button sizing. */
+    .copy-btn {
+      padding: 7px 10px;
+      font-size: 0.78rem;
+    }
+
+    /* Small button sizing. */
+    .small-btn {
+      padding: 8px 11px;
+      font-size: 0.88rem;
+    }
+
+    /* Tab button sizing. */
+    .tab-btn {
+      padding: 9px 13px;
+      font-size: 0.9rem;
+    }
+
+    /* Active tab button. */
+    .tab-btn.active {
+      border-color: rgba(74, 222, 128, 0.5);
+      color: #dcfce7;
+      background: rgba(74, 222, 128, 0.12);
+    }
+
+    /* Step button sizing. */
+    .step-btn {
+      padding: 9px 12px;
+      color: var(--muted);
+      background: rgba(17, 27, 49, 0.88);
+      font-size: 0.9rem;
+    }
+
+    /* Active step button. */
+    .step-btn.active {
+      color: var(--text);
+      border-color: rgba(125, 211, 252, 0.66);
+      background: rgba(125, 211, 252, 0.14);
+    }
+
+    /* Workflow diagram. */
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      align-items: stretch;
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    /* Workflow node. */
+    .node {
+      position: relative;
+      min-height: 148px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      background: rgba(2, 6, 23, 0.42);
+    }
+
+    /* Workflow node number. */
+    .node .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      margin-bottom: 10px;
+      border-radius: 999px;
+      color: #00111d;
+      background: var(--primary);
+      font-weight: 950;
+    }
+
+    /* Workflow arrow. */
+    .node::after {
+      content: "→";
+      position: absolute;
+      top: 50%;
+      right: -17px;
+      transform: translateY(-50%);
+      color: var(--primary);
+      font-size: 1.3rem;
+      font-weight: 900;
+    }
+
+    /* Hide arrow after final workflow node. */
+    .node:last-child::after {
+      display: none;
+    }
+
+    /* Fork diagram box. */
+    .diagram {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      align-items: center;
+      margin-top: 18px;
+    }
+
+    /* Diagram repo card. */
+    .repo-box {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      background: rgba(2, 6, 23, 0.48);
+      min-height: 170px;
+    }
+
+    /* Diagram connection. */
+    .connect {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-weight: 900;
+      text-align: center;
+    }
+
+    /* Diagram line. */
+    .line {
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    }
+
+    /* Table styling. */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(2, 6, 23, 0.36);
+    }
+
+    /* Table base. */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    /* Table cells. */
+    th,
+    td {
+      padding: 14px 15px;
+      border-bottom: 1px solid rgba(39, 54, 80, 0.9);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    /* Table head. */
+    th {
+      color: var(--primary);
+      background: rgba(15, 23, 42, 0.78);
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* Last row no border. */
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    /* List spacing. */
+    ul,
+    ol {
+      margin: 10px 0 0;
+      padding-left: 22px;
+    }
+
+    /* List item spacing. */
+    li {
+      margin: 8px 0;
+    }
+
+    /* Input group layout. */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+
+    /* Label styling. */
+    label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 800;
+    }
+
+    /* Input and select styling. */
+    input,
+    select {
+      width: 100%;
+      margin-top: 7px;
+      padding: 12px 13px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      color: var(--text);
+      background: rgba(2, 6, 23, 0.55);
+      font: inherit;
+      outline: none;
+    }
+
+    /* Focus state. */
+    input:focus,
+    select:focus {
+      border-color: rgba(125, 211, 252, 0.75);
+      box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.12);
+    }
+
+    /* Quiz choice. */
+    .choice {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px 14px;
+      text-align: left;
+      color: var(--muted);
+      background: rgba(2, 6, 23, 0.44);
+    }
+
+    /* Correct quiz choice. */
+    .choice.correct {
+      border-color: rgba(74, 222, 128, 0.68);
+      color: #dcfce7;
+      background: rgba(74, 222, 128, 0.12);
+    }
+
+    /* Wrong quiz choice. */
+    .choice.wrong {
+      border-color: rgba(251, 113, 133, 0.68);
+      color: #ffe4e6;
+      background: rgba(251, 113, 133, 0.1);
+    }
+
+    /* Quiz answer message. */
+    .answer {
+      display: none;
+      margin-top: 10px;
+      color: var(--muted);
+    }
+
+    /* Visible answer message. */
+    .answer.show {
+      display: block;
+    }
+
+    /* Checklist item. */
+    .check-item {
+      display: flex;
+      gap: 11px;
+      align-items: flex-start;
+      margin: 10px 0;
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(2, 6, 23, 0.38);
+    }
+
+    /* Checkbox size. */
+    .check-item input {
+      width: auto;
+      margin-top: 5px;
+      accent-color: #38bdf8;
+    }
+
+    /* Progress bar shell. */
+    .progress-shell {
+      height: 12px;
+      margin-top: 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(2, 6, 23, 0.6);
+    }
+
+    /* Progress bar fill. */
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--good));
+      transition: width 0.25s ease;
+    }
+
+    /* Tab controls. */
+    .tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 16px 0;
+    }
+
+    /* Hidden tab panel. */
+    .tab-panel {
+      display: none;
+    }
+
+    /* Visible tab panel. */
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* Scenario simulator layout. */
+    .sim-grid {
+      display: grid;
+      grid-template-columns: 290px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    /* Simulator button column. */
+    .sim-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Simulator output. */
+    .sim-output {
+      min-height: 240px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      background: rgba(2, 6, 23, 0.45);
+    }
+
+    /* Source links. */
+    .sources a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    /* Source hover. */
+    .sources a:hover {
+      text-decoration: underline;
+    }
+
+    /* Footer styling. */
+    footer {
+      padding: 18px 0 44px;
+      color: var(--soft);
+      text-align: center;
+    }
+
+    /* Responsive layout for tablets. */
+    @media (max-width: 930px) {
+      .hero-grid,
+      .grid.two,
+      .grid.three,
+      .flow,
+      .diagram,
+      .sim-grid,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .node::after {
+        content: "↓";
+        right: 50%;
+        top: auto;
+        bottom: -24px;
+        transform: translateX(50%);
+      }
+
+      .node {
+        min-height: auto;
+      }
+    }
+
+    /* Responsive spacing for small phones. */
+    @media (max-width: 560px) {
+      .hero {
+        padding: 24px;
+        border-radius: 24px;
+      }
+
+      h1 {
+        font-size: 2.25rem;
+      }
+
+      pre {
+        font-size: 0.86rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header section. -->
+  <header class="wrap">
+    <!-- Hero card. -->
+    <div class="hero">
+      <!-- Lesson label. -->
+      <p class="eyebrow">🍴 Git & GitHub Study Notes</p>
+      <!-- Main page title. -->
+      <h1>Forking Repositories</h1>
+      <!-- Short introduction. -->
+      <p class="lead">
+        Forking is a safe way to copy someone else's repository into your own GitHub account, make changes freely, and propose those changes back using a pull request. Think of it as creating your own workspace beside the original project — not inside it.
+      </p>
+      <!-- Summary cards. -->
+      <div class="hero-grid">
+        <!-- Summary card one. -->
+        <div class="hero-stat">
+          <span>Best for</span>
+          <strong>Open-source contribution</strong>
+        </div>
+        <!-- Summary card two. -->
+        <div class="hero-stat">
+          <span>Main idea</span>
+          <strong>Your copy + upstream project</strong>
+        </div>
+        <!-- Summary card three. -->
+        <div class="hero-stat">
+          <span>Final step</span>
+          <strong>Open a pull request</strong>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sticky navigation. -->
+  <nav>
+    <!-- Navigation container. -->
+    <div class="wrap nav-row">
+      <a href="#meaning">Meaning</a>
+      <a href="#mental-model">Mental model</a>
+      <a href="#workflow">Workflow</a>
+      <a href="#commands">Commands</a>
+      <a href="#origin-upstream">Origin vs upstream</a>
+      <a href="#syncing">Syncing</a>
+      <a href="#builder">Command builder</a>
+      <a href="#simulator">Simulator</a>
+      <a href="#practice">Practice</a>
+      <a href="#quiz">Quiz</a>
+      <a href="#cheatsheet">Cheat sheet</a>
+    </div>
+  </nav>
+
+  <!-- Main note content. -->
+  <main class="wrap">
+    <!-- Meaning section. -->
+    <section id="meaning" class="card">
+      <!-- Section badge. -->
+      <p class="badge">01 · Concept</p>
+      <!-- Section title. -->
+      <h2>What is a fork?</h2>
+      <!-- Explanation. -->
+      <p>
+        A <strong>fork</strong> is a new repository created from another repository. On GitHub, that original repository is commonly called the <strong>upstream</strong> repository. Your fork lives under your account, so you can make changes without directly editing the original project.
+      </p>
+      <!-- Simple callout. -->
+      <div class="callout">
+        <p><strong>Simple meaning:</strong> “I want my own copy of this project, so I can experiment and maybe send improvements back later.” ✨</p>
+      </div>
+      <!-- Use cases grid. -->
+      <div class="grid three" style="margin-top: 16px;">
+        <!-- Use case one. -->
+        <div class="mini">
+          <h3>🧪 Experiment safely</h3>
+          <p class="muted">Try changes without breaking or touching the original repository.</p>
+        </div>
+        <!-- Use case two. -->
+        <div class="mini">
+          <h3>🛠 Fix a bug</h3>
+          <p class="muted">Make a fix in your fork, then send it to the project owner through a pull request.</p>
+        </div>
+        <!-- Use case three. -->
+        <div class="mini">
+          <h3>🌱 Start from a project</h3>
+          <p class="muted">Use an existing project as a starting point for your own idea, while keeping a link to the original.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mental model section. -->
+    <section id="mental-model" class="card">
+      <!-- Section badge. -->
+      <p class="badge">02 · Picture it</p>
+      <!-- Section title. -->
+      <h2>The fork mental model</h2>
+      <!-- Intro text. -->
+      <p>
+        The easiest way to understand forking is to separate the project into three places: the original project, your GitHub copy, and your local machine.
+      </p>
+      <!-- Visual diagram. -->
+      <div class="diagram">
+        <!-- Upstream box. -->
+        <div class="repo-box">
+          <p class="badge">Upstream</p>
+          <h3>Original repository</h3>
+          <p class="muted">Example: <code>ORIGINAL-OWNER/project</code></p>
+          <p class="soft">You may not have permission to push here directly.</p>
+        </div>
+        <!-- Connection middle. -->
+        <div class="connect">
+          <div>Fork on GitHub</div>
+          <div class="line"></div>
+          <div>Clone to computer</div>
+        </div>
+        <!-- Your side box. -->
+        <div class="repo-box">
+          <p class="badge">Origin + local</p>
+          <h3>Your fork and local copy</h3>
+          <p class="muted">Example: <code>YOUR-USERNAME/project</code></p>
+          <p class="soft">You can push here because it belongs to you.</p>
+        </div>
+      </div>
+      <!-- Important note. -->
+      <div class="warning" style="margin-top: 16px;">
+        <p><strong>Important:</strong> A fork is not the same as a branch. A branch is inside one repository. A fork is a separate repository that can contain its own branches, issues, pull requests, and settings.</p>
+      </div>
+    </section>
+
+    <!-- Comparison table section. -->
+    <section class="card">
+      <!-- Section badge. -->
+      <p class="badge">03 · Compare</p>
+      <!-- Section title. -->
+      <h2>Fork vs clone vs branch</h2>
+      <!-- Explanation. -->
+      <p>
+        These three words are related, but they do different jobs. This table keeps them clear.
+      </p>
+      <!-- Table wrapper. -->
+      <div class="table-wrap">
+        <!-- Comparison table. -->
+        <table>
+          <thead>
+            <tr>
+              <th>Term</th>
+              <th>Where it lives</th>
+              <th>What it means</th>
+              <th>Common command or action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Fork</strong></td>
+              <td>GitHub account or organization</td>
+              <td>A separate copy of another repository under your control.</td>
+              <td>Click <code>Fork</code> on GitHub or use <code>gh repo fork</code>.</td>
+            </tr>
+            <tr>
+              <td><strong>Clone</strong></td>
+              <td>Your computer</td>
+              <td>A local copy of a remote repository.</td>
+              <td><code>git clone URL</code></td>
+            </tr>
+            <tr>
+              <td><strong>Branch</strong></td>
+              <td>Inside a repository</td>
+              <td>A separate line of development for a feature, bug fix, or experiment.</td>
+              <td><code>git checkout -b feature/name</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Workflow section. -->
+    <section id="workflow" class="card">
+      <!-- Section badge. -->
+      <p class="badge">04 · Flow</p>
+      <!-- Section title. -->
+      <h2>The complete forking workflow</h2>
+      <!-- Explanation. -->
+      <p>
+        This is the normal workflow when you want to contribute to a project where you do not directly push to the original repository.
+      </p>
+      <!-- Flow diagram. -->
+      <div class="flow">
+        <!-- Flow node one. -->
+        <div class="node">
+          <span class="num">1</span>
+          <h3>Fork</h3>
+          <p class="muted">Create your GitHub copy from the original repository.</p>
+        </div>
+        <!-- Flow node two. -->
+        <div class="node">
+          <span class="num">2</span>
+          <h3>Clone</h3>
+          <p class="muted">Download your fork to your computer.</p>
+        </div>
+        <!-- Flow node three. -->
+        <div class="node">
+          <span class="num">3</span>
+          <h3>Branch</h3>
+          <p class="muted">Create a feature branch for your work.</p>
+        </div>
+        <!-- Flow node four. -->
+        <div class="node">
+          <span class="num">4</span>
+          <h3>Commit + push</h3>
+          <p class="muted">Save changes locally, then push to your fork.</p>
+        </div>
+        <!-- Flow node five. -->
+        <div class="node">
+          <span class="num">5</span>
+          <h3>Pull request</h3>
+          <p class="muted">Ask the upstream project to review and merge.</p>
+        </div>
+      </div>
+      <!-- Success reminder. -->
+      <div class="success">
+        <p><strong>Memory trick:</strong> <code>Fork → Clone → Branch → Commit → Push → Pull Request</code></p>
+      </div>
+    </section>
+
+    <!-- Commands section. -->
+    <section id="commands" class="card">
+      <!-- Section badge. -->
+      <p class="badge">05 · Commands</p>
+      <!-- Section title. -->
+      <h2>Step-by-step commands</h2>
+      <!-- Intro text. -->
+      <p>
+        The exact repository names will change, but the structure stays the same. Replace the placeholder names with your real GitHub username and repository details.
+      </p>
+      <!-- Code block one. -->
+      <div class="code-wrap">
+        <div class="code-top">
+          <span>After clicking Fork on GitHub</span>
+          <button class="copy-btn" data-copy="clone-commands">Copy</button>
+        </div>
+        <pre id="clone-commands"># Clone your fork from GitHub to your computer.
+git clone https://github.com/YOUR-USERNAME/REPOSITORY-NAME.git
+
+# Move into the cloned project folder.
+cd REPOSITORY-NAME
+
+# Check which remote repositories your local project knows about.
+git remote -v</pre>
+      </div>
+      <!-- Code block two. -->
+      <div class="code-wrap">
+        <div class="code-top">
+          <span>Add the original repository as upstream</span>
+          <button class="copy-btn" data-copy="upstream-commands">Copy</button>
+        </div>
+        <pre id="upstream-commands"># Add the original project as a remote named upstream.
+git remote add upstream https://github.com/ORIGINAL-OWNER/REPOSITORY-NAME.git
+
+# Confirm that origin and upstream are both configured.
+git remote -v</pre>
+      </div>
+      <!-- Code block three. -->
+      <div class="code-wrap">
+        <div class="code-top">
+          <span>Create a branch, commit, and push</span>
+          <button class="copy-btn" data-copy="work-commands">Copy</button>
+        </div>
+        <pre id="work-commands"># Create and switch to a new branch for your change.
+git checkout -b feature/my-change
+
+# Check which files changed after editing.
+git status
+
+# Stage the changed files.
+git add .
+
+# Commit the staged files with a clear message.
+git commit -m "Add my change"
+
+# Push your branch to your fork on GitHub.
+git push -u origin feature/my-change</pre>
+      </div>
+      <!-- Pull request instructions. -->
+      <div class="callout">
+        <p><strong>Then open GitHub:</strong> Go to your fork, click <strong>Compare & pull request</strong>, confirm the base repository is the original project, and submit the pull request.</p>
+      </div>
+    </section>
+
+    <!-- Origin upstream section. -->
+    <section id="origin-upstream" class="card">
+      <!-- Section badge. -->
+      <p class="badge">06 · Remotes</p>
+      <!-- Section title. -->
+      <h2><code>origin</code> vs <code>upstream</code></h2>
+      <!-- Explanation. -->
+      <p>
+        In a fork workflow, you usually work with two remote repositories. This is where beginners often get confused, so keep this part clear.
+      </p>
+      <!-- Two-column explanation. -->
+      <div class="grid two">
+        <!-- Origin box. -->
+        <div class="mini">
+          <h3>📦 <code>origin</code></h3>
+          <p class="muted">This normally points to <strong>your fork</strong>.</p>
+          <p class="soft">You push your feature branches here because you own this repository.</p>
+          <div class="code-wrap">
+            <div class="code-top"><span>Example</span><button class="copy-btn" data-copy="origin-example">Copy</button></div>
+            <pre id="origin-example">origin  https://github.com/YOUR-USERNAME/project.git</pre>
+          </div>
+        </div>
+        <!-- Upstream box. -->
+        <div class="mini">
+          <h3>🏠 <code>upstream</code></h3>
+          <p class="muted">This points to the <strong>original repository</strong>.</p>
+          <p class="soft">You fetch new changes from here to keep your fork updated.</p>
+          <div class="code-wrap">
+            <div class="code-top"><span>Example</span><button class="copy-btn" data-copy="upstream-example">Copy</button></div>
+            <pre id="upstream-example">upstream  https://github.com/ORIGINAL-OWNER/project.git</pre>
+          </div>
+        </div>
+      </div>
+      <!-- Mini table. -->
+      <div class="table-wrap" style="margin-top: 16px;">
+        <table>
+          <thead>
+            <tr>
+              <th>Need</th>
+              <th>Remote</th>
+              <th>Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Push your branch</td>
+              <td><code>origin</code></td>
+              <td><code>git push origin feature/my-change</code></td>
+            </tr>
+            <tr>
+              <td>Fetch updates from original project</td>
+              <td><code>upstream</code></td>
+              <td><code>git fetch upstream</code></td>
+            </tr>
+            <tr>
+              <td>Merge latest original changes into your local main</td>
+              <td><code>upstream/main</code></td>
+              <td><code>git merge upstream/main</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Syncing section. -->
+    <section id="syncing" class="card">
+      <!-- Section badge. -->
+      <p class="badge">07 · Keep updated</p>
+      <!-- Section title. -->
+      <h2>How to sync your fork</h2>
+      <!-- Explanation. -->
+      <p>
+        After you fork a repository, the original project may continue to receive new commits. Your fork does not magically stay updated forever, so you should sync it before creating or updating a pull request.
+      </p>
+      <!-- Tab buttons. -->
+      <div class="tabs" role="tablist" aria-label="Sync methods">
+        <button class="tab-btn active" data-tab="sync-cli">Command line</button>
+        <button class="tab-btn" data-tab="sync-web">GitHub website</button>
+        <button class="tab-btn" data-tab="sync-gh">GitHub CLI</button>
+      </div>
+      <!-- Command-line panel. -->
+      <div id="sync-cli" class="tab-panel active">
+        <div class="code-wrap">
+          <div class="code-top">
+            <span>Sync using normal Git commands</span>
+            <button class="copy-btn" data-copy="sync-commands">Copy</button>
+          </div>
+          <pre id="sync-commands"># Move to your local main branch.
+git checkout main
+
+# Download new commits from the original repository.
+git fetch upstream
+
+# Merge the original project's main branch into your local main branch.
+git merge upstream/main
+
+# Push your updated local main branch to your fork on GitHub.
+git push origin main</pre>
+        </div>
+      </div>
+      <!-- Web panel. -->
+      <div id="sync-web" class="tab-panel">
+        <div class="mini">
+          <h3>Sync using GitHub website</h3>
+          <ol>
+            <li>Open your fork on GitHub.</li>
+            <li>Find the <strong>Sync fork</strong> option near the file list.</li>
+            <li>Review the incoming commits.</li>
+            <li>Click <strong>Update branch</strong>.</li>
+          </ol>
+          <p class="muted">This is beginner-friendly, but command line syncing helps you understand what Git is actually doing.</p>
+        </div>
+      </div>
+      <!-- GitHub CLI panel. -->
+      <div id="sync-gh" class="tab-panel">
+        <div class="code-wrap">
+          <div class="code-top">
+            <span>Sync using GitHub CLI</span>
+            <button class="copy-btn" data-copy="gh-sync">Copy</button>
+          </div>
+          <pre id="gh-sync"># Sync your fork's main branch from its parent repository.
+gh repo sync YOUR-USERNAME/REPOSITORY-NAME -b main</pre>
+        </div>
+      </div>
+      <!-- Warning. -->
+      <div class="warning" style="margin-top: 16px;">
+        <p><strong>Conflict reminder:</strong> If your fork and the original project changed the same lines differently, Git may ask you to resolve conflicts before the sync can complete.</p>
+      </div>
+    </section>
+
+    <!-- Command builder section. -->
+    <section id="builder" class="card">
+      <!-- Section badge. -->
+      <p class="badge">08 · Interactive</p>
+      <!-- Section title. -->
+      <h2>Command builder</h2>
+      <!-- Explanation. -->
+      <p>
+        Type example repository details below. The commands will update automatically, so you can see exactly where each name is used.
+      </p>
+      <!-- Form inputs. -->
+      <div class="form-grid">
+        <label>
+          Your GitHub username
+          <input id="yourUser" value="binura-dev" />
+        </label>
+        <label>
+          Original owner
+          <input id="origOwner" value="coursera-learning-programs" />
+        </label>
+        <label>
+          Repository name
+          <input id="repoName" value="meta-version-control-forking" />
+        </label>
+        <label>
+          Default branch
+          <select id="branchName">
+            <option value="main" selected>main</option>
+            <option value="master">master</option>
+          </select>
+        </label>
+      </div>
+      <!-- Builder code output. -->
+      <div class="code-wrap">
+        <div class="code-top">
+          <span>Your generated commands</span>
+          <button class="copy-btn" data-copy="generatedCommands">Copy</button>
+        </div>
+        <pre id="generatedCommands"></pre>
+      </div>
+    </section>
+
+    <!-- Simulator section. -->
+    <section id="simulator" class="card">
+      <!-- Section badge. -->
+      <p class="badge">09 · Learn by clicking</p>
+      <!-- Section title. -->
+      <h2>Forking workflow simulator</h2>
+      <!-- Explanation. -->
+      <p>
+        Click each step to see what is happening conceptually. This is not running Git; it is a learning map for your brain. 🧠
+      </p>
+      <!-- Simulator grid. -->
+      <div class="sim-grid">
+        <!-- Simulator buttons. -->
+        <div class="sim-buttons">
+          <button class="step-btn active" data-step="fork">1. Fork</button>
+          <button class="step-btn" data-step="clone">2. Clone</button>
+          <button class="step-btn" data-step="branch">3. Create branch</button>
+          <button class="step-btn" data-step="commit">4. Commit changes</button>
+          <button class="step-btn" data-step="push">5. Push to origin</button>
+          <button class="step-btn" data-step="pr">6. Open pull request</button>
+          <button class="step-btn" data-step="sync">7. Sync later</button>
+        </div>
+        <!-- Simulator output. -->
+        <div class="sim-output" id="simOutput"></div>
+      </div>
+    </section>
+
+    <!-- Practice section. -->
+    <section id="practice" class="card">
+      <!-- Section badge. -->
+      <p class="badge">10 · Practice lab</p>
+      <!-- Section title. -->
+      <h2>Practice checklist</h2>
+      <!-- Explanation. -->
+      <p>
+        Use this checklist while practicing with a public repository. Your progress bar updates as you tick each step.
+      </p>
+      <!-- Checklist items. -->
+      <div id="practiceList">
+        <label class="check-item"><input type="checkbox" /> <span>Find a public repository that you are allowed to fork.</span></label>
+        <label class="check-item"><input type="checkbox" /> <span>Click <strong>Fork</strong> and create a copy under your GitHub account.</span></label>
+        <label class="check-item"><input type="checkbox" /> <span>Clone your fork to your computer using <code>git clone</code>.</span></label>
+        <label class="check-item"><input type="checkbox" /> <span>Add the original repository as <code>upstream</code>.</span></label>
+        <label class="check-item"><input type="checkbox" /> <span>Create a feature branch using <code>git checkout -b</code>.</span></label>
+        <label class="check-item"><input type="checkbox" /> <span>Make a small change, stage it, and commit it.</span></label>
+        <label class="check-item"><input type="checkbox" /> <span>Push your branch to <code>origin</code>.</span></label>
+        <label class="check-item"><input type="checkbox" /> <span>Open a pull request from your fork branch into the upstream repository.</span></label>
+      </div>
+      <!-- Progress display. -->
+      <div class="progress-shell" aria-label="Practice progress">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <p class="muted" id="progressText" style="margin-top: 10px;">0 of 8 completed</p>
+    </section>
+
+    <!-- Common mistakes section. -->
+    <section class="card">
+      <!-- Section badge. -->
+      <p class="badge">11 · Avoid mistakes</p>
+      <!-- Section title. -->
+      <h2>Common forking mistakes</h2>
+      <!-- Mistake cards. -->
+      <div class="grid two">
+        <!-- Mistake one. -->
+        <div class="danger">
+          <h3>❌ Pushing to the wrong remote</h3>
+          <p class="muted">In a fork workflow, you usually push your branch to <code>origin</code>, not <code>upstream</code>.</p>
+          <p><strong>Fix:</strong> Run <code>git remote -v</code> before pushing.</p>
+        </div>
+        <!-- Mistake two. -->
+        <div class="danger">
+          <h3>❌ Working directly on <code>main</code></h3>
+          <p class="muted">Making feature commits directly on <code>main</code> can make pull requests messy.</p>
+          <p><strong>Fix:</strong> Create a feature branch first.</p>
+        </div>
+        <!-- Mistake three. -->
+        <div class="warning">
+          <h3>⚠️ Forgetting to sync</h3>
+          <p class="muted">Your fork can fall behind the original project.</p>
+          <p><strong>Fix:</strong> Run <code>git fetch upstream</code> and merge before opening a PR.</p>
+        </div>
+        <!-- Mistake four. -->
+        <div class="warning">
+          <h3>⚠️ Unclear commit messages</h3>
+          <p class="muted">Messages like “update” or “fix” are hard to review.</p>
+          <p><strong>Fix:</strong> Use messages like <code>Fix typo in installation guide</code>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quiz section. -->
+    <section id="quiz" class="card">
+      <!-- Section badge. -->
+      <p class="badge">12 · Check yourself</p>
+      <!-- Section title. -->
+      <h2>Quick quiz</h2>
+      <!-- Quiz grid. -->
+      <div class="grid two">
+        <!-- Question one. -->
+        <div class="mini quiz-card">
+          <h3>1. What is a fork?</h3>
+          <button class="choice" data-correct="false">A local copy on your computer</button>
+          <button class="choice" data-correct="true">A separate GitHub repository copied from another repository</button>
+          <button class="choice" data-correct="false">A commit message style</button>
+          <p class="answer"><strong>Answer:</strong> A fork is a separate repository copied from another repository.</p>
+        </div>
+        <!-- Question two. -->
+        <div class="mini quiz-card">
+          <h3>2. What does <code>origin</code> usually point to in a fork workflow?</h3>
+          <button class="choice" data-correct="true">Your fork</button>
+          <button class="choice" data-correct="false">The original project</button>
+          <button class="choice" data-correct="false">Your current branch only</button>
+          <p class="answer"><strong>Answer:</strong> <code>origin</code> usually points to your fork.</p>
+        </div>
+        <!-- Question three. -->
+        <div class="mini quiz-card">
+          <h3>3. Why add an <code>upstream</code> remote?</h3>
+          <button class="choice" data-correct="false">To delete your fork</button>
+          <button class="choice" data-correct="true">To fetch updates from the original repository</button>
+          <button class="choice" data-correct="false">To rename your default branch</button>
+          <p class="answer"><strong>Answer:</strong> <code>upstream</code> lets you fetch updates from the original repository.</p>
+        </div>
+        <!-- Question four. -->
+        <div class="mini quiz-card">
+          <h3>4. Where do you usually push your feature branch?</h3>
+          <button class="choice" data-correct="false"><code>upstream</code></button>
+          <button class="choice" data-correct="true"><code>origin</code></button>
+          <button class="choice" data-correct="false"><code>HEAD</code></button>
+          <p class="answer"><strong>Answer:</strong> Push your feature branch to <code>origin</code>, then open a pull request.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cheatsheet section. -->
+    <section id="cheatsheet" class="card">
+      <!-- Section badge. -->
+      <p class="badge">13 · Save this</p>
+      <!-- Section title. -->
+      <h2>Forking cheat sheet</h2>
+      <!-- Cheat sheet code. -->
+      <div class="code-wrap">
+        <div class="code-top">
+          <span>Complete command recap</span>
+          <button class="copy-btn" data-copy="cheatSheet">Copy</button>
+        </div>
+        <pre id="cheatSheet"># 1. Clone your fork.
+git clone https://github.com/YOUR-USERNAME/REPOSITORY-NAME.git
+
+# 2. Enter the project folder.
+cd REPOSITORY-NAME
+
+# 3. Add original repository as upstream.
+git remote add upstream https://github.com/ORIGINAL-OWNER/REPOSITORY-NAME.git
+
+# 4. Verify origin and upstream.
+git remote -v
+
+# 5. Create a feature branch.
+git checkout -b feature/my-change
+
+# 6. Stage changed files.
+git add .
+
+# 7. Commit changes.
+git commit -m "Describe your change"
+
+# 8. Push feature branch to your fork.
+git push -u origin feature/my-change
+
+# 9. Sync your fork later.
+git checkout main
+git fetch upstream
+git merge upstream/main
+git push origin main</pre>
+      </div>
+      <!-- Final memory card. -->
+      <div class="success">
+        <p><strong>Best beginner habit:</strong> Before every contribution, run <code>git remote -v</code>, confirm where <code>origin</code> and <code>upstream</code> point, then create a clean feature branch.</p>
+      </div>
+    </section>
+
+    <!-- Sources section. -->
+    <section class="card sources">
+      <!-- Section badge. -->
+      <p class="badge">Sources</p>
+      <!-- Section title. -->
+      <h2>References used</h2>
+      <!-- Source explanation. -->
+      <p class="muted">
+        This note was written as an original learner-friendly guide for the Coursera forking topic. The Coursera supplement page did not expose lesson text directly in the browser, so the Git/GitHub workflow details were checked against public documentation.
+      </p>
+      <!-- Source list. -->
+      <ul>
+        <li><a href="https://www.coursera.org/learn/introduction-to-version-control/supplement/t383F/forking" target="_blank" rel="noopener">Coursera: Forking supplement link provided</a></li>
+        <li><a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks" target="_blank" rel="noopener">GitHub Docs: About forks</a></li>
+        <li><a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo" target="_blank" rel="noopener">GitHub Docs: Fork a repository</a></li>
+        <li><a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork" target="_blank" rel="noopener">GitHub Docs: Syncing a fork</a></li>
+        <li><a href="https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes" target="_blank" rel="noopener">Pro Git Book: Working with remotes</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- Page footer. -->
+  <footer class="wrap">
+    <p>Made for quick revision, hands-on practice, and beginner-friendly Git confidence. 🚀</p>
+  </footer>
+
+  <!-- Internal JavaScript keeps interactivity offline-friendly. -->
+  <script>
+    // Store simulator text for each workflow step.
+    const simulatorSteps = {
+      // Fork step explanation.
+      fork: {
+        title: "🍴 Step 1: Fork",
+        body: "You click Fork on GitHub. GitHub creates a separate copy of the original repository under your account. The original project is usually called upstream."
+      },
+      // Clone step explanation.
+      clone: {
+        title: "💻 Step 2: Clone",
+        body: "You clone your fork to your computer. This creates a local working copy where you can edit files, create branches, and make commits."
+      },
+      // Branch step explanation.
+      branch: {
+        title: "🌿 Step 3: Create a branch",
+        body: "You create a feature branch so your change stays separate from main. This makes the pull request easier to review."
+      },
+      // Commit step explanation.
+      commit: {
+        title: "✅ Step 4: Commit changes",
+        body: "After editing files, you stage and commit them. The commit records what changed and why."
+      },
+      // Push step explanation.
+      push: {
+        title: "📤 Step 5: Push to origin",
+        body: "You push your feature branch to origin, which normally means your fork on GitHub. This does not directly change the original project."
+      },
+      // Pull request step explanation.
+      pr: {
+        title: "🔁 Step 6: Open a pull request",
+        body: "You ask the original project to review and pull your changes from your fork. Maintainers can discuss, request edits, and merge if approved."
+      },
+      // Sync step explanation.
+      sync: {
+        title: "🔄 Step 7: Sync later",
+        body: "When the original project receives new commits, fetch from upstream and merge into your local main. Then push main back to your fork."
+      }
+    };
+
+    // Escape HTML characters for safe command generation.
+    function escapeHtml(value) {
+      // Replace ampersands first to avoid double escaping.
+      return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // Get plain text from an element for copy buttons.
+    function getCopyText(id) {
+      // Find the code element by ID.
+      const element = document.getElementById(id);
+      // Return empty text if the element does not exist.
+      if (!element) return "";
+      // Return text content so formatting is preserved well enough for commands.
+      return element.innerText;
+    }
+
+    // Copy a block of text to the user's clipboard.
+    async function copyText(text, button) {
+      // Try modern clipboard support first.
+      try {
+        // Write text to clipboard.
+        await navigator.clipboard.writeText(text);
+        // Store original button label.
+        const original = button.textContent;
+        // Show success label.
+        button.textContent = "Copied!";
+        // Restore original label soon after.
+        setTimeout(() => button.textContent = original, 1200);
+      } catch (error) {
+        // Fallback alert if clipboard is unavailable.
+        alert("Copy failed. You can manually select and copy the commands.");
+      }
+    }
+
+    // Generate customized commands from the builder inputs.
+    function updateGeneratedCommands() {
+      // Read username input.
+      const yourUser = document.getElementById("yourUser").value.trim() || "YOUR-USERNAME";
+      // Read original owner input.
+      const origOwner = document.getElementById("origOwner").value.trim() || "ORIGINAL-OWNER";
+      // Read repository name input.
+      const repoName = document.getElementById("repoName").value.trim() || "REPOSITORY-NAME";
+      // Read branch name input.
+      const branchName = document.getElementById("branchName").value || "main";
+      // Build the command text.
+      const commands = `# Clone your fork to your computer.\ngit clone https://github.com/${yourUser}/${repoName}.git\n\n# Move into the project folder.\ncd ${repoName}\n\n# Add the original repository as upstream.\ngit remote add upstream https://github.com/${origOwner}/${repoName}.git\n\n# Verify that origin and upstream are correct.\ngit remote -v\n\n# Create a clean feature branch.\ngit checkout -b feature/my-change\n\n# Stage and commit your work after editing files.\ngit add .\ngit commit -m "Add my change"\n\n# Push the branch to your fork.\ngit push -u origin feature/my-change\n\n# Sync your fork with the original project later.\ngit checkout ${branchName}\ngit fetch upstream\ngit merge upstream/${branchName}\ngit push origin ${branchName}`;
+      // Write escaped command text to the page.
+      document.getElementById("generatedCommands").innerHTML = escapeHtml(commands);
+    }
+
+    // Update checklist progress display.
+    function updateProgress() {
+      // Collect all practice checkboxes.
+      const boxes = Array.from(document.querySelectorAll("#practiceList input[type='checkbox']"));
+      // Count selected boxes.
+      const done = boxes.filter(box => box.checked).length;
+      // Calculate percentage completion.
+      const percent = boxes.length ? Math.round((done / boxes.length) * 100) : 0;
+      // Update progress bar width.
+      document.getElementById("progressFill").style.width = `${percent}%`;
+      // Update progress text.
+      document.getElementById("progressText").textContent = `${done} of ${boxes.length} completed`;
+    }
+
+    // Render simulator content for a selected step.
+    function renderSimulator(stepKey) {
+      // Find simulator data.
+      const step = simulatorSteps[stepKey] || simulatorSteps.fork;
+      // Render selected simulator text.
+      document.getElementById("simOutput").innerHTML = `<h3>${step.title}</h3><p class="muted">${step.body}</p>`;
+    }
+
+    // Attach listeners after the page loads.
+    document.addEventListener("DOMContentLoaded", () => {
+      // Initialize command builder output.
+      updateGeneratedCommands();
+      // Initialize simulator output.
+      renderSimulator("fork");
+      // Attach copy button listeners.
+      document.querySelectorAll(".copy-btn").forEach(button => {
+        // Add click handler to each copy button.
+        button.addEventListener("click", () => copyText(getCopyText(button.dataset.copy), button));
+      });
+      // Attach builder input listeners.
+      ["yourUser", "origOwner", "repoName", "branchName"].forEach(id => {
+        // Find the input by ID.
+        const input = document.getElementById(id);
+        // Update commands whenever the input changes.
+        input.addEventListener("input", updateGeneratedCommands);
+        // Update commands whenever the select changes.
+        input.addEventListener("change", updateGeneratedCommands);
+      });
+      // Attach tab listeners.
+      document.querySelectorAll(".tab-btn").forEach(button => {
+        // Add click handler to each tab.
+        button.addEventListener("click", () => {
+          // Remove active state from all tab buttons.
+          document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+          // Hide all panels.
+          document.querySelectorAll(".tab-panel").forEach(panel => panel.classList.remove("active"));
+          // Activate selected button.
+          button.classList.add("active");
+          // Activate selected panel.
+          document.getElementById(button.dataset.tab).classList.add("active");
+        });
+      });
+      // Attach simulator step listeners.
+      document.querySelectorAll(".step-btn").forEach(button => {
+        // Add click handler to each simulator step.
+        button.addEventListener("click", () => {
+          // Remove active state from simulator buttons.
+          document.querySelectorAll(".step-btn").forEach(btn => btn.classList.remove("active"));
+          // Activate clicked simulator button.
+          button.classList.add("active");
+          // Render corresponding simulator content.
+          renderSimulator(button.dataset.step);
+        });
+      });
+      // Attach quiz listeners.
+      document.querySelectorAll(".quiz-card").forEach(card => {
+        // Attach listener to every choice in the card.
+        card.querySelectorAll(".choice").forEach(choice => {
+          // Add click handler to the quiz choice.
+          choice.addEventListener("click", () => {
+            // Reset all choices in the same card.
+            card.querySelectorAll(".choice").forEach(item => item.classList.remove("correct", "wrong"));
+            // Mark choice based on correctness.
+            choice.classList.add(choice.dataset.correct === "true" ? "correct" : "wrong");
+            // Show answer explanation.
+            card.querySelector(".answer").classList.add("show");
+          });
+        });
+      });
+      // Attach checklist listeners.
+      document.querySelectorAll("#practiceList input[type='checkbox']").forEach(box => {
+        // Update progress on each checkbox change.
+        box.addEventListener("change", updateProgress);
+      });
+      // Initialize checklist progress.
+      updateProgress();
+    });
+  </script>
+</body>
+</html>

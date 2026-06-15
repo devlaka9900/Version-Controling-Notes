@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Basic document metadata. -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Git Blame Dark Interactive Notes</title>
+
+  <!-- Page styles. -->
+  <style>
+    /* Dark theme design tokens. */
+    :root {
+      --bg: #070b14;
+      --bg-soft: #0d1424;
+      --panel: #111827;
+      --panel-2: #151f32;
+      --panel-3: #0b1220;
+      --text: #f8fafc;
+      --muted: #b6c2d2;
+      --soft: #8793a5;
+      --border: #263247;
+      --border-strong: #3b4a63;
+      --primary: #7dd3fc;
+      --primary-strong: #38bdf8;
+      --accent: #fbbf24;
+      --accent-2: #c084fc;
+      --good: #4ade80;
+      --bad: #fb7185;
+      --warn: #f59e0b;
+      --code-bg: #020617;
+      --code-border: #1e293b;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+      --radius: 20px;
+      --radius-sm: 12px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+
+    /* Smooth scrolling for navigation links. */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Main page base. */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 35%),
+        radial-gradient(circle at top right, rgba(192, 132, 252, 0.12), transparent 32%),
+        linear-gradient(135deg, var(--bg), #0a1020 60%, #070b14);
+      color: var(--text);
+      font-family: var(--font);
+      line-height: 1.65;
+    }
+
+    /* Content width wrapper. */
+    .wrap {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    /* Header hero. */
+    header {
+      padding: 48px 0 28px;
+    }
+
+    /* Hero card. */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 42px;
+      background: linear-gradient(145deg, rgba(17, 24, 39, 0.96), rgba(13, 20, 36, 0.94));
+      box-shadow: var(--shadow);
+    }
+
+    /* Decorative glow inside hero. */
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 360px;
+      height: 360px;
+      right: -120px;
+      top: -130px;
+      border-radius: 50%;
+      background: rgba(125, 211, 252, 0.12);
+      filter: blur(2px);
+    }
+
+    /* Hero content stays above decoration. */
+    .hero > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Small label. */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 12px;
+      padding: 7px 12px;
+      border: 1px solid rgba(125, 211, 252, 0.3);
+      border-radius: 999px;
+      color: var(--primary);
+      background: rgba(125, 211, 252, 0.08);
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    /* Main heading. */
+    h1 {
+      margin: 0;
+      max-width: 820px;
+      font-size: clamp(2.3rem, 6vw, 4.9rem);
+      line-height: 1.02;
+      letter-spacing: -0.06em;
+    }
+
+    /* Section headings. */
+    h2 {
+      margin: 0 0 16px;
+      font-size: clamp(1.45rem, 3vw, 2.2rem);
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+    }
+
+    /* Subheadings. */
+    h3 {
+      margin: 0 0 10px;
+      font-size: 1.13rem;
+      color: var(--text);
+    }
+
+    /* Paragraphs. */
+    p {
+      margin: 0 0 14px;
+    }
+
+    /* Muted helper text. */
+    .muted {
+      color: var(--muted);
+    }
+
+    /* Hero intro text. */
+    .lead {
+      max-width: 830px;
+      margin: 20px 0 0;
+      color: var(--muted);
+      font-size: 1.12rem;
+    }
+
+    /* Navigation bar. */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(14px);
+      background: rgba(7, 11, 20, 0.78);
+      border-bottom: 1px solid rgba(38, 50, 71, 0.8);
+    }
+
+    /* Navigation link row. */
+    .nav-row {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 12px 0;
+      scrollbar-width: thin;
+    }
+
+    /* Navigation links. */
+    .nav-row a {
+      flex: 0 0 auto;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      background: rgba(17, 24, 39, 0.82);
+    }
+
+    /* Navigation hover state. */
+    .nav-row a:hover {
+      color: var(--text);
+      border-color: var(--primary);
+      background: rgba(125, 211, 252, 0.08);
+    }
+
+    /* Main layout. */
+    main {
+      padding: 28px 0 64px;
+    }
+
+    /* Standard section card. */
+    .card {
+      margin: 18px 0;
+      padding: 26px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(17, 24, 39, 0.86);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22);
+    }
+
+    /* Slightly brighter card. */
+    .card.bright {
+      background: linear-gradient(145deg, rgba(21, 31, 50, 0.96), rgba(17, 24, 39, 0.92));
+    }
+
+    /* Grid helpers. */
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    /* Two-column grid. */
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* Three-column grid. */
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    /* Responsive grids. */
+    @media (max-width: 820px) {
+      .grid.two,
+      .grid.three {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding: 28px;
+      }
+    }
+
+    /* Small info tile. */
+    .tile {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(13, 20, 36, 0.8);
+    }
+
+    /* Tile heading spacing. */
+    .tile h3 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Tag row. */
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 18px;
+    }
+
+    /* Pill tag. */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border: 1px solid rgba(125, 211, 252, 0.25);
+      border-radius: 999px;
+      color: var(--primary);
+      background: rgba(125, 211, 252, 0.08);
+      font-size: 0.86rem;
+      font-weight: 650;
+    }
+
+    /* Code card wrapper. */
+    .code-card {
+      overflow: hidden;
+      margin: 14px 0;
+      border: 1px solid var(--code-border);
+      border-radius: var(--radius-sm);
+      background: var(--code-bg);
+    }
+
+    /* Code card header. */
+    .code-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--code-border);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--muted);
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    /* Code copy button. */
+    .copy-btn {
+      cursor: pointer;
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      padding: 6px 10px;
+      color: var(--text);
+      background: rgba(125, 211, 252, 0.08);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    /* Code copy hover. */
+    .copy-btn:hover {
+      border-color: var(--primary);
+      background: rgba(125, 211, 252, 0.15);
+    }
+
+    /* Preformatted code. */
+    pre {
+      margin: 0;
+      padding: 16px;
+      overflow-x: auto;
+      color: #e2e8f0;
+      font-family: var(--mono);
+      font-size: 0.92rem;
+      line-height: 1.65;
+    }
+
+    /* Inline code. */
+    code {
+      font-family: var(--mono);
+    }
+
+    /* Inline code outside pre blocks. */
+    :not(pre) > code {
+      padding: 2px 6px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--primary);
+      background: rgba(2, 6, 23, 0.75);
+    }
+
+    /* Alert box. */
+    .callout {
+      margin: 16px 0;
+      padding: 16px 18px;
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      border-radius: 16px;
+      color: #fde68a;
+      background: rgba(251, 191, 36, 0.09);
+    }
+
+    /* Success box. */
+    .success {
+      border-color: rgba(74, 222, 128, 0.35);
+      color: #bbf7d0;
+      background: rgba(74, 222, 128, 0.08);
+    }
+
+    /* Danger-ish info box. */
+    .danger {
+      border-color: rgba(251, 113, 133, 0.35);
+      color: #fecdd3;
+      background: rgba(251, 113, 133, 0.08);
+    }
+
+    /* Table wrapper. */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+
+    /* Tables. */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 680px;
+      background: rgba(13, 20, 36, 0.72);
+    }
+
+    /* Table cells. */
+    th,
+    td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    /* Table headings. */
+    th {
+      color: var(--text);
+      background: rgba(21, 31, 50, 0.96);
+      font-size: 0.92rem;
+    }
+
+    /* Last table row. */
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    /* Git blame sample line. */
+    .sample-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin: 14px 0;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--code-bg);
+      font-family: var(--mono);
+      color: #e2e8f0;
+    }
+
+    /* Clickable blame part. */
+    .part {
+      cursor: pointer;
+      border: 1px solid var(--border-strong);
+      border-radius: 9px;
+      padding: 5px 8px;
+      color: inherit;
+      background: rgba(15, 23, 42, 0.9);
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+
+    /* Active and hover state. */
+    .part:hover,
+    .part.active {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: rgba(125, 211, 252, 0.11);
+    }
+
+    /* Explanation output box. */
+    .explain-box {
+      margin-top: 12px;
+      padding: 16px;
+      border: 1px solid rgba(125, 211, 252, 0.3);
+      border-radius: 16px;
+      color: var(--muted);
+      background: rgba(125, 211, 252, 0.07);
+    }
+
+    /* Builder controls. */
+    .builder {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    /* Builder responsive layout. */
+    @media (max-width: 760px) {
+      .builder {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Form label. */
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    /* Form inputs. */
+    input[type="text"],
+    input[type="number"] {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 12px 13px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      outline: none;
+      color: var(--text);
+      background: rgba(2, 6, 23, 0.78);
+      font: inherit;
+    }
+
+    /* Focus style. */
+    input[type="text"]:focus,
+    input[type="number"]:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(125, 211, 252, 0.1);
+    }
+
+    /* Checkbox row. */
+    .check-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    /* Responsive checkbox row. */
+    @media (max-width: 620px) {
+      .check-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Checkbox label. */
+    .check {
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(13, 20, 36, 0.65);
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 650;
+    }
+
+    /* Real checkbox. */
+    .check input {
+      margin-top: 4px;
+      accent-color: var(--primary-strong);
+    }
+
+    /* Accordions. */
+    details {
+      margin: 12px 0;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(13, 20, 36, 0.68);
+    }
+
+    /* Summary rows. */
+    summary {
+      cursor: pointer;
+      padding: 14px 16px;
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    /* Details content. */
+    .details-body {
+      padding: 0 16px 16px;
+      color: var(--muted);
+    }
+
+    /* Quiz card. */
+    .quiz-card {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(13, 20, 36, 0.78);
+    }
+
+    /* Quiz options. */
+    .quiz-options {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    /* Quiz answer button. */
+    .quiz-options button {
+      cursor: pointer;
+      padding: 11px 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      background: rgba(2, 6, 23, 0.55);
+      text-align: left;
+      font: inherit;
+    }
+
+    /* Quiz answer hover. */
+    .quiz-options button:hover {
+      border-color: var(--primary);
+    }
+
+    /* Correct quiz answer. */
+    .quiz-options button.correct {
+      border-color: rgba(74, 222, 128, 0.6);
+      background: rgba(74, 222, 128, 0.12);
+    }
+
+    /* Incorrect quiz answer. */
+    .quiz-options button.incorrect {
+      border-color: rgba(251, 113, 133, 0.6);
+      background: rgba(251, 113, 133, 0.12);
+    }
+
+    /* Quiz feedback. */
+    .feedback {
+      min-height: 24px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    /* Step list. */
+    .steps {
+      counter-reset: step;
+      display: grid;
+      gap: 12px;
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    /* Step item. */
+    .steps li {
+      position: relative;
+      padding: 16px 16px 16px 58px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(13, 20, 36, 0.72);
+    }
+
+    /* Step number. */
+    .steps li::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: 16px;
+      top: 17px;
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      color: #06111d;
+      background: var(--primary);
+      font-weight: 900;
+    }
+
+    /* Footer. */
+    footer {
+      padding: 24px 0 42px;
+      color: var(--soft);
+      text-align: center;
+    }
+
+    /* Print styles. */
+    @media print {
+      nav,
+      .copy-btn,
+      .quiz-options button,
+      .part {
+        display: none !important;
+      }
+
+      body {
+        background: #ffffff;
+        color: #111827;
+      }
+
+      .card,
+      .hero,
+      .tile,
+      details,
+      .quiz-card {
+        box-shadow: none;
+        background: #ffffff;
+        color: #111827;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Page header. -->
+  <header>
+    <div class="wrap">
+      <section class="hero">
+        <p class="eyebrow">Git lesson notes - dark theme</p>
+        <h1>Git Blame: find who changed what, when, and why</h1>
+        <p class="lead">
+          <code>git blame</code> shows the commit, author, timestamp, and line number for every line in a file.
+          It is useful when you need to understand the history behind code, investigate bugs, or ask the right teammate for context.
+        </p>
+        <div class="tag-row" aria-label="Key topics">
+          <span class="tag">File history</span>
+          <span class="tag">Commit IDs</span>
+          <span class="tag">Authors</span>
+          <span class="tag">Line ranges</span>
+          <span class="tag">git log + git show</span>
+        </div>
+      </section>
+    </div>
+  </header>
+
+  <!-- Sticky navigation. -->
+  <nav aria-label="Page navigation">
+    <div class="wrap nav-row">
+      <a href="#meaning">Meaning</a>
+      <a href="#quick-start">Quick start</a>
+      <a href="#output">Output anatomy</a>
+      <a href="#ranges">Line ranges</a>
+      <a href="#formats">Formats</a>
+      <a href="#commit-details">Commit details</a>
+      <a href="#builder">Command builder</a>
+      <a href="#practice">Practice</a>
+      <a href="#quiz">Quiz</a>
+      <a href="#cheat-sheet">Cheat sheet</a>
+    </div>
+  </nav>
+
+  <!-- Main content. -->
+  <main>
+    <div class="wrap">
+      <!-- Meaning section. -->
+      <section id="meaning" class="card bright">
+        <h2>1. What is <code>git blame</code>?</h2>
+        <p>
+          In a team project, many people edit the same files over time. When something looks confusing,
+          you may want to know: who last changed this line, when did they change it, and which commit made that change?
+        </p>
+        <p>
+          That is where <code>git blame</code> helps. It prints the file line by line and attaches history information to each line.
+        </p>
+
+        <div class="grid three">
+          <article class="tile">
+            <h3>What file?</h3>
+            <p class="muted">You run blame against one specific file, such as <code>feature.js</code> or <code>setup.py</code>.</p>
+          </article>
+          <article class="tile">
+            <h3>What line?</h3>
+            <p class="muted">Git shows the exact line number and the current content on that line.</p>
+          </article>
+          <article class="tile">
+            <h3>What commit?</h3>
+            <p class="muted">Git shows the commit ID that last changed that line, plus the author and date.</p>
+          </article>
+        </div>
+
+        <div class="callout danger">
+          <strong>Important mindset:</strong> despite the name, <code>git blame</code> should not be used to attack people.
+          Use it to understand context, trace history, and collaborate better.
+        </div>
+      </section>
+
+      <!-- Quick start section. -->
+      <section id="quick-start" class="card">
+        <h2>2. Basic command</h2>
+        <p>
+          The simplest form is <code>git blame</code> followed by the file name.
+        </p>
+
+        <div class="code-card">
+          <div class="code-top">
+            <span>Show blame information for one file</span>
+            <button class="copy-btn" type="button" data-copy>Copy</button>
+          </div>
+          <pre><code># Show who last changed each line in feature.js
+git blame feature.js</code></pre>
+        </div>
+
+        <p>
+          Example with a Python file:
+        </p>
+
+        <div class="code-card">
+          <div class="code-top">
+            <span>Example using setup.py</span>
+            <button class="copy-btn" type="button" data-copy>Copy</button>
+          </div>
+          <pre><code># Show blame information for setup.py
+git blame setup.py</code></pre>
+        </div>
+
+        <div class="callout success">
+          <strong>Simple idea:</strong> <code>git log</code> tells you the commit history of the repository.
+          <code>git blame</code> tells you the commit history of each line inside one file.
+        </div>
+      </section>
+
+      <!-- Output anatomy section. -->
+      <section id="output" class="card bright">
+        <h2>3. How to read the output</h2>
+        <p>
+          A typical <code>git blame</code> line contains a commit ID, author, timestamp, line number, and the actual file content.
+        </p>
+
+        <div class="code-card">
+          <div class="code-top">
+            <span>Sample git blame output</span>
+            <button class="copy-btn" type="button" data-copy>Copy</button>
+          </div>
+          <pre><code>8b55a9c3 (Maya Silva 2026-06-01 09:20:14 +0530 12) const total = calculateTotal(items);
+9c90f441 (Alex Perera 2026-06-03 18:42:08 +0530 13) return total + tax;</code></pre>
+        </div>
+
+        <h3>Click each part to understand it</h3>
+        <div class="sample-line" aria-label="Interactive git blame line">
+          <button class="part" type="button" data-info="commit">8b55a9c3</button>
+          <span>(</span>
+          <button class="part" type="button" data-info="author">Maya Silva</button>
+          <button class="part" type="button" data-info="date">2026-06-01</button>
+          <button class="part" type="button" data-info="time">09:20:14 +0530</button>
+          <button class="part" type="button" data-info="line">12</button>
+          <span>)</span>
+          <button class="part" type="button" data-info="content">const total = calculateTotal(items);</button>
+        </div>
+        <div id="blameExplanation" class="explain-box">
+          Click a highlighted part above to see what it means.
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Part</th>
+                <th>Meaning</th>
+                <th>Why it matters</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>8b55a9c3</code></td>
+                <td>Commit ID, usually shortened.</td>
+                <td>Use it to inspect the exact commit that changed the line.</td>
+              </tr>
+              <tr>
+                <td><code>Maya Silva</code></td>
+                <td>Author of the commit.</td>
+                <td>Useful when you need context from the person who made the change.</td>
+              </tr>
+              <tr>
+                <td><code>2026-06-01 09:20:14 +0530</code></td>
+                <td>Date, time, and timezone of the commit.</td>
+                <td>Helps you understand when the change entered history.</td>
+              </tr>
+              <tr>
+                <td><code>12</code></td>
+                <td>Line number in the current file.</td>
+                <td>Shows where the code appears now.</td>
+              </tr>
+              <tr>
+                <td><code>const total = ...</code></td>
+                <td>Actual content on that line.</td>
+                <td>This is the code or text that currently exists in the file.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Line range section. -->
+      <section id="ranges" class="card">
+        <h2>4. Show only a specific line range</h2>
+        <p>
+          Large files can have hundreds or thousands of lines. You usually do not need the entire file.
+          Use uppercase <code>-L</code> to limit the output to a start line and end line.
+        </p>
+
+        <div class="code-card">
+          <div class="code-top">
+            <span>Show lines 5 to 15 only</span>
+            <button class="copy-btn" type="button" data-copy>Copy</button>
+          </div>
+          <pre><code># Show blame output only from line 5 to line 15
+git blame -L 5,15 setup.py</code></pre>
+        </div>
+
+        <div class="callout">
+          <strong>Careful:</strong> <code>-L</code> is uppercase for line ranges.
+          Lowercase <code>-l</code> has a different meaning: it shows full-length commit hashes.
+        </div>
+
+        <details>
+          <summary>Why does Git show the same commit ID on multiple lines?</summary>
+          <div class="details-body">
+            If one commit changed several lines, the same commit ID can appear on many output lines.
+            That means those lines were last changed together in the same commit.
+          </div>
+        </details>
+      </section>
+
+      <!-- Formatting section. -->
+      <section id="formats" class="card bright">
+        <h2>5. Change the output format</h2>
+        <p>
+          <code>git blame</code> has useful options for making the output more detailed or easier to read.
+        </p>
+
+        <div class="grid two">
+          <div class="tile">
+            <h3>Show full commit hash</h3>
+            <p class="muted">Use lowercase <code>-l</code> when you want the complete commit ID.</p>
+            <div class="code-card">
+              <div class="code-top">
+                <span>Full commit hashes</span>
+                <button class="copy-btn" type="button" data-copy>Copy</button>
+              </div>
+              <pre><code># Show full-length commit hashes
+git blame -l setup.py</code></pre>
+            </div>
+          </div>
+
+          <div class="tile">
+            <h3>Show author email</h3>
+            <p class="muted">Use <code>-e</code> when you want email addresses in the output.</p>
+            <div class="code-card">
+              <div class="code-top">
+                <span>Author emails</span>
+                <button class="copy-btn" type="button" data-copy>Copy</button>
+              </div>
+              <pre><code># Show author email addresses
+git blame -e setup.py</code></pre>
+            </div>
+          </div>
+
+          <div class="tile">
+            <h3>Change date format</h3>
+            <p class="muted">Use <code>--date=short</code> to show simpler dates.</p>
+            <div class="code-card">
+              <div class="code-top">
+                <span>Short dates</span>
+                <button class="copy-btn" type="button" data-copy>Copy</button>
+              </div>
+              <pre><code># Show dates in YYYY-MM-DD format
+git blame --date=short setup.py</code></pre>
+            </div>
+          </div>
+
+          <div class="tile">
+            <h3>Ignore whitespace changes</h3>
+            <p class="muted">Use <code>-w</code> when formatting changes are hiding the real logic change.</p>
+            <div class="code-card">
+              <div class="code-top">
+                <span>Ignore whitespace</span>
+                <button class="copy-btn" type="button" data-copy>Copy</button>
+              </div>
+              <pre><code># Ignore whitespace-only differences while blaming
+git blame -w setup.py</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Commit details section. -->
+      <section id="commit-details" class="card">
+        <h2>6. Go from a blamed line to the full commit</h2>
+        <p>
+          <code>git blame</code> shows where a line last changed. To see the actual full commit details,
+          copy the commit ID and inspect it with <code>git show</code> or <code>git log -p</code>.
+        </p>
+
+        <div class="grid two">
+          <div>
+            <h3>Option A: use <code>git show</code></h3>
+            <div class="code-card">
+              <div class="code-top">
+                <span>Inspect one commit</span>
+                <button class="copy-btn" type="button" data-copy>Copy</button>
+              </div>
+              <pre><code># Show the commit message and patch for this commit
+git show 8b55a9c3</code></pre>
+            </div>
+          </div>
+
+          <div>
+            <h3>Option B: use <code>git log -p</code></h3>
+            <div class="code-card">
+              <div class="code-top">
+                <span>Inspect one commit with patch</span>
+                <button class="copy-btn" type="button" data-copy>Copy</button>
+              </div>
+              <pre><code># Show one commit and its detailed patch
+git log -p -1 8b55a9c3</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout success">
+          <strong>Good workflow:</strong> use <code>git blame</code> to find the commit ID, then use <code>git show</code>
+          or <code>git log -p -1</code> to understand the full change.
+        </div>
+      </section>
+
+      <!-- Builder section. -->
+      <section id="builder" class="card bright">
+        <h2>7. Interactive command builder</h2>
+        <p>
+          Build a <code>git blame</code> command by choosing the file, line range, and options.
+        </p>
+
+        <div class="builder">
+          <div>
+            <label for="fileName">File name</label>
+            <input id="fileName" type="text" value="setup.py" />
+          </div>
+          <div>
+            <label for="startLine">Start line</label>
+            <input id="startLine" type="number" min="1" value="5" />
+          </div>
+          <div>
+            <label for="endLine">End line</label>
+            <input id="endLine" type="number" min="1" value="15" />
+          </div>
+          <div>
+            <label for="fallbackNote">Tip</label>
+            <input id="fallbackNote" type="text" value="Use q to exit long output in the pager" readonly />
+          </div>
+        </div>
+
+        <div class="check-row" aria-label="Command options">
+          <label class="check">
+            <input id="useRange" type="checkbox" checked />
+            <span>Use line range with uppercase <code>-L</code></span>
+          </label>
+          <label class="check">
+            <input id="useLongHash" type="checkbox" />
+            <span>Show full commit hash with lowercase <code>-l</code></span>
+          </label>
+          <label class="check">
+            <input id="useEmail" type="checkbox" />
+            <span>Show author email with <code>-e</code></span>
+          </label>
+          <label class="check">
+            <input id="useWhitespace" type="checkbox" />
+            <span>Ignore whitespace with <code>-w</code></span>
+          </label>
+        </div>
+
+        <div class="code-card">
+          <div class="code-top">
+            <span>Your generated command</span>
+            <button class="copy-btn" type="button" data-copy>Copy</button>
+          </div>
+          <pre><code id="generatedCommand">git blame -L 5,15 setup.py</code></pre>
+        </div>
+      </section>
+
+      <!-- Practice section. -->
+      <section id="practice" class="card">
+        <h2>8. Practice lab</h2>
+        <p>
+          Try this workflow in any Git repository that has commit history.
+        </p>
+
+        <ol class="steps">
+          <li>
+            <strong>Pick a file.</strong>
+            <p class="muted">Choose a file that has been changed before, such as <code>README.md</code>, <code>feature.js</code>, or <code>setup.py</code>.</p>
+          </li>
+          <li>
+            <strong>Run blame on the file.</strong>
+            <div class="code-card">
+              <div class="code-top">
+                <span>Run blame</span>
+                <button class="copy-btn" type="button" data-copy>Copy</button>
+              </div>
+              <pre><code># Replace README.md with your chosen file
+git blame README.md</code></pre>
+            </div>
+          </li>
+          <li>
+            <strong>Limit the output.</strong>
+            <div class="code-card">
+              <div class="code-top">
+                <span>Limit to a line range</span>
+                <button class="copy-btn" type="button" data-copy>Copy</button>
+              </div>
+              <pre><code># Show only lines 1 to 20
+git blame -L 1,20 README.md</code></pre>
+            </div>
+          </li>
+          <li>
+            <strong>Copy a commit ID.</strong>
+            <p class="muted">Choose a commit ID from the left side of the blame output.</p>
+          </li>
+          <li>
+            <strong>Inspect the commit.</strong>
+            <div class="code-card">
+              <div class="code-top">
+                <span>Open commit details</span>
+                <button class="copy-btn" type="button" data-copy>Copy</button>
+              </div>
+              <pre><code># Replace COMMIT_ID with the ID you copied
+git show COMMIT_ID</code></pre>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <!-- Common mistakes section. -->
+      <section class="card bright">
+        <h2>9. Common mistakes and helpful tips</h2>
+        <details open>
+          <summary>Using lowercase <code>-l</code> for line ranges</summary>
+          <div class="details-body">
+            Use uppercase <code>-L</code> for line ranges, like <code>git blame -L 5,15 setup.py</code>.
+            Lowercase <code>-l</code> means show the full commit hash.
+          </div>
+        </details>
+        <details>
+          <summary>Expecting <code>git blame</code> to show uncommitted changes</summary>
+          <div class="details-body">
+            <code>git blame</code> mainly works with committed history. If you edit a file but do not commit it,
+            that new edit is not part of the commit history yet.
+          </div>
+        </details>
+        <details>
+          <summary>Assuming the blamed author is always the original author</summary>
+          <div class="details-body">
+            Blame shows who last changed the line. If someone only reformatted code, they might appear as the last author.
+            Use <code>-w</code> to reduce noise from whitespace-only changes.
+          </div>
+        </details>
+        <details>
+          <summary>Forgetting to inspect the full commit</summary>
+          <div class="details-body">
+            Blame gives a clue. The full story is usually in the commit message and patch.
+            Use <code>git show &lt;commit-id&gt;</code> after finding the commit ID.
+          </div>
+        </details>
+      </section>
+
+      <!-- Quiz section. -->
+      <section id="quiz" class="card">
+        <h2>10. Quick quiz</h2>
+        <div class="grid two">
+          <article class="quiz-card" data-quiz>
+            <h3>Question 1</h3>
+            <p>Which command shows who last changed each line in <code>feature.js</code>?</p>
+            <div class="quiz-options">
+              <button type="button" data-correct="false">git status feature.js</button>
+              <button type="button" data-correct="true">git blame feature.js</button>
+              <button type="button" data-correct="false">git branch feature.js</button>
+            </div>
+            <div class="feedback"></div>
+          </article>
+
+          <article class="quiz-card" data-quiz>
+            <h3>Question 2</h3>
+            <p>Which option limits blame output to lines 5 through 15?</p>
+            <div class="quiz-options">
+              <button type="button" data-correct="true">git blame -L 5,15 setup.py</button>
+              <button type="button" data-correct="false">git blame -l 5,15 setup.py</button>
+              <button type="button" data-correct="false">git blame --lines setup.py 5 15</button>
+            </div>
+            <div class="feedback"></div>
+          </article>
+
+          <article class="quiz-card" data-quiz>
+            <h3>Question 3</h3>
+            <p>After finding a commit ID with <code>git blame</code>, what command can show the detailed commit?</p>
+            <div class="quiz-options">
+              <button type="button" data-correct="false">git checkout commit-id</button>
+              <button type="button" data-correct="true">git show commit-id</button>
+              <button type="button" data-correct="false">git init commit-id</button>
+            </div>
+            <div class="feedback"></div>
+          </article>
+
+          <article class="quiz-card" data-quiz>
+            <h3>Question 4</h3>
+            <p>What does the commit ID in blame output represent?</p>
+            <div class="quiz-options">
+              <button type="button" data-correct="false">The file size</button>
+              <button type="button" data-correct="false">The branch name</button>
+              <button type="button" data-correct="true">The commit that last changed that line</button>
+            </div>
+            <div class="feedback"></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Cheat sheet section. -->
+      <section id="cheat-sheet" class="card bright">
+        <h2>11. Git blame cheat sheet</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Need</th>
+                <th>Command</th>
+                <th>Use case</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Blame an entire file</td>
+                <td><code>git blame feature.js</code></td>
+                <td>See who last changed every line in a file.</td>
+              </tr>
+              <tr>
+                <td>Blame a line range</td>
+                <td><code>git blame -L 5,15 setup.py</code></td>
+                <td>Focus only on lines 5 through 15.</td>
+              </tr>
+              <tr>
+                <td>Show full commit IDs</td>
+                <td><code>git blame -l setup.py</code></td>
+                <td>Get full-length hashes instead of shortened hashes.</td>
+              </tr>
+              <tr>
+                <td>Show emails</td>
+                <td><code>git blame -e setup.py</code></td>
+                <td>Display author email addresses.</td>
+              </tr>
+              <tr>
+                <td>Ignore whitespace</td>
+                <td><code>git blame -w setup.py</code></td>
+                <td>Reduce noise from formatting-only changes.</td>
+              </tr>
+              <tr>
+                <td>Inspect a commit</td>
+                <td><code>git show 8b55a9c3</code></td>
+                <td>Read the commit message and see the patch.</td>
+              </tr>
+              <tr>
+                <td>Inspect one commit with log</td>
+                <td><code>git log -p -1 8b55a9c3</code></td>
+                <td>View one commit and its detailed code changes.</td>
+              </tr>
+              <tr>
+                <td>Exit long output</td>
+                <td><code>q</code></td>
+                <td>Quit the Git pager when output opens in a scrollable view.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Summary section. -->
+      <section class="card">
+        <h2>Final mental model</h2>
+        <p>
+          Think of <code>git blame</code> as a history label attached to every line of a file.
+          It answers: <strong>Which commit last touched this line?</strong>
+        </p>
+        <p>
+          For deeper investigation, combine it with <code>git show</code> or <code>git log -p</code>.
+          Blame points you to the right commit; the commit details explain the actual change.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer. -->
+  <footer>
+    <div class="wrap">
+      Git Blame notes - created as a dark interactive HTML study sheet.
+    </div>
+  </footer>
+
+  <!-- Interactive page behavior. -->
+  <script>
+    // Store explanations for each part of the blame output.
+    const blameInfo = {
+      commit: "Commit ID: this is the commit that last changed this line. You can copy it and run git show <commit-id>.",
+      author: "Author: this is the person recorded as the author of the commit that changed the line.",
+      date: "Date: this shows the day when the commit was created.",
+      time: "Time and timezone: this helps you understand exactly when the commit happened.",
+      line: "Line number: this is the current line number where the content appears in the file.",
+      content: "Content: this is the actual code or text currently present on that line."
+    };
+
+    // Attach click behavior to all copy buttons.
+    document.querySelectorAll("[data-copy]").forEach((button) => {
+      // Copy the nearest code block when the button is clicked.
+      button.addEventListener("click", async () => {
+        // Find the code block inside the same code card.
+        const codeBlock = button.closest(".code-card").querySelector("code");
+        // Read the visible text from the code block.
+        const textToCopy = codeBlock.innerText;
+        try {
+          // Write the command text to the clipboard.
+          await navigator.clipboard.writeText(textToCopy);
+          // Save the original button label.
+          const originalText = button.textContent;
+          // Show success feedback.
+          button.textContent = "Copied";
+          // Restore the button label after a short delay.
+          setTimeout(() => { button.textContent = originalText; }, 1200);
+        } catch (error) {
+          // Show fallback feedback if clipboard access is blocked.
+          button.textContent = "Select text";
+        }
+      });
+    });
+
+    // Attach explanation behavior to the clickable blame parts.
+    document.querySelectorAll(".part").forEach((part) => {
+      // Update the explanation box when a blame part is clicked.
+      part.addEventListener("click", () => {
+        // Remove active styling from all parts.
+        document.querySelectorAll(".part").forEach((item) => item.classList.remove("active"));
+        // Add active styling to the clicked part.
+        part.classList.add("active");
+        // Read the selected information key.
+        const key = part.dataset.info;
+        // Update the explanation text.
+        document.getElementById("blameExplanation").textContent = blameInfo[key];
+      });
+    });
+
+    // Get command builder fields.
+    const fileName = document.getElementById("fileName");
+    const startLine = document.getElementById("startLine");
+    const endLine = document.getElementById("endLine");
+    const useRange = document.getElementById("useRange");
+    const useLongHash = document.getElementById("useLongHash");
+    const useEmail = document.getElementById("useEmail");
+    const useWhitespace = document.getElementById("useWhitespace");
+    const generatedCommand = document.getElementById("generatedCommand");
+
+    // Build the command based on selected options.
+    function updateGeneratedCommand() {
+      // Start with the base command.
+      let command = "git blame";
+      // Add a line range when selected.
+      if (useRange.checked) {
+        command += ` -L ${startLine.value || 1},${endLine.value || 1}`;
+      }
+      // Add full hash output when selected.
+      if (useLongHash.checked) {
+        command += " -l";
+      }
+      // Add email output when selected.
+      if (useEmail.checked) {
+        command += " -e";
+      }
+      // Add whitespace ignoring when selected.
+      if (useWhitespace.checked) {
+        command += " -w";
+      }
+      // Add the file name at the end.
+      command += ` ${fileName.value || "README.md"}`;
+      // Display the generated command.
+      generatedCommand.textContent = command;
+    }
+
+    // Update the generated command whenever a builder input changes.
+    [fileName, startLine, endLine, useRange, useLongHash, useEmail, useWhitespace].forEach((input) => {
+      input.addEventListener("input", updateGeneratedCommand);
+      input.addEventListener("change", updateGeneratedCommand);
+    });
+
+    // Attach behavior to each quiz card.
+    document.querySelectorAll("[data-quiz]").forEach((quiz) => {
+      // Find all answer buttons in this quiz.
+      const answers = quiz.querySelectorAll("button[data-correct]");
+      // Find the feedback area in this quiz.
+      const feedback = quiz.querySelector(".feedback");
+      // Add click handling for every answer.
+      answers.forEach((answer) => {
+        answer.addEventListener("click", () => {
+          // Reset previous answer styling.
+          answers.forEach((item) => item.classList.remove("correct", "incorrect"));
+          // Check whether the clicked answer is correct.
+          const isCorrect = answer.dataset.correct === "true";
+          // Apply visual feedback to the clicked answer.
+          answer.classList.add(isCorrect ? "correct" : "incorrect");
+          // Show text feedback to the learner.
+          feedback.textContent = isCorrect ? "Correct. Nice work." : "Not quite. Try the option that matches the Git concept.";
+        });
+      });
+    });
+
+    // Initialize the generated command on page load.
+    updateGeneratedCommand();
+  </script>
+</body>
+</html>
