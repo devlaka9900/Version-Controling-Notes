@@ -1,0 +1,3008 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Git & Version Control Daily Practice Assignments</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --panel: #161b22;
+            --panel-2: #0f1722;
+            --text: #e6edf3;
+            --muted: #9da7b3;
+            --border: #30363d;
+            --accent: #58a6ff;
+            --accent-2: #7ee787;
+            --warn: #f2cc60;
+            --danger: #ff7b72;
+            --code: #10151f;
+        }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            line-height: 1.6;
+        }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        header {
+            padding: 48px 20px 28px;
+            border-bottom: 1px solid var(--border);
+            background: radial-gradient(circle at top left, rgba(88,166,255,.18), transparent 38%), var(--panel-2);
+        }
+        main { width: min(1180px, 100%); margin: 0 auto; padding: 24px 18px 72px; }
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            background: rgba(13,17,23,.94);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(8px);
+        }
+        nav .inner { width: min(1180px, 100%); margin: 0 auto; padding: 10px 18px; display: flex; flex-wrap: wrap; gap: 10px; }
+        nav a { padding: 6px 10px; border: 1px solid var(--border); border-radius: 999px; color: var(--text); font-size: .92rem; }
+        h1, h2, h3, h4 { line-height: 1.25; margin-top: 0; }
+        h1 { font-size: clamp(2rem, 5vw, 4rem); margin-bottom: 10px; }
+        h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--border); }
+        h3 { font-size: 1.25rem; margin-bottom: 8px; }
+        h4 { margin-bottom: 6px; color: var(--accent-2); }
+        p { margin: 10px 0; }
+        .hero { width: min(1180px, 100%); margin: 0 auto; }
+        .subtitle { color: var(--muted); font-size: 1.1rem; max-width: 900px; }
+        .meta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+        .pill, .badge {
+            display: inline-block;
+            border: 1px solid var(--border);
+            background: rgba(88,166,255,.08);
+            color: var(--text);
+            border-radius: 999px;
+            padding: 4px 10px;
+            font-size: .86rem;
+            white-space: nowrap;
+        }
+        .badge { color: var(--accent-2); background: rgba(126,231,135,.08); }
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px;
+            margin: 18px 0;
+            box-shadow: 0 8px 22px rgba(0,0,0,.18);
+        }
+        .assignment-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .assignment-head h3 { margin: 0; }
+        .grid { display: grid; gap: 16px; }
+        .two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .callout { border-left: 4px solid var(--accent); background: rgba(88,166,255,.08); }
+        .warning { border-left: 4px solid var(--warn); background: rgba(242,204,96,.08); }
+        .danger { border-left: 4px solid var(--danger); background: rgba(255,123,114,.08); }
+        code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+        code { background: var(--code); border: 1px solid var(--border); padding: 1px 5px; border-radius: 5px; }
+        pre {
+            overflow-x: auto;
+            background: var(--code);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            margin: 14px 0;
+        }
+        pre code { border: 0; padding: 0; background: transparent; color: #d2e3f3; }
+        details {
+            margin-top: 14px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 14px;
+            background: rgba(13,17,23,.45);
+        }
+        summary { cursor: pointer; color: var(--accent); font-weight: 700; }
+        table { width: 100%; border-collapse: collapse; margin: 14px 0; }
+        th, td { border: 1px solid var(--border); padding: 10px; text-align: left; vertical-align: top; }
+        th { background: rgba(88,166,255,.08); }
+        tbody tr:nth-child(even) { background: rgba(255,255,255,.02); }
+        .checklist label { display: block; padding: 6px 0; color: var(--text); }
+        .muted { color: var(--muted); }
+        footer { border-top: 1px solid var(--border); margin-top: 48px; padding-top: 24px; color: var(--muted); }
+        @media (max-width: 760px) {
+            .two, .three { grid-template-columns: 1fr; }
+            header { padding-top: 32px; }
+            nav { position: static; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="hero">
+            <h1>Git & Version Control Daily Practice Assignments</h1>
+            <p class="subtitle">A dark-themed, scenario-based practice guide for keeping Git commands fresh even when you are not using version control every day. Start with beginner drills, then move into collaboration, recovery, rebase, release, and professional workflows.</p>
+            <div class="meta">
+                <span class="pill">48 assignments</span>
+                <span class="pill">Beginner to complex</span>
+                <span class="pill">Answers included</span>
+                <span class="pill">No internet required for most labs</span>
+                <span class="pill">Designed for daily repetition</span>
+            </div>
+        </div>
+    </header>
+
+    <nav aria-label="Page navigation">
+        <div class="inner">
+            <a href="#how-to-use">How to use</a>
+            <a href="#mental-model">Mental model</a>
+            <a href="#cheat-sheet">Cheat sheet</a>
+            <a href="#daily-plan">Daily plan</a>
+            <a href="#level-1---beginner-foundations">Level 1</a>
+            <a href="#level-2---branching-and-local-collaboration">Level 2</a>
+            <a href="#level-3---undo--repair--and-recovery">Level 3</a>
+            <a href="#level-4---rebase-and-history-shaping">Level 4</a>
+            <a href="#level-5---professional-workflows">Level 5</a>
+            <a href="#sources">Sources</a>
+        </div>
+    </nav>
+
+    <main>
+        <section id="how-to-use" class="card callout">
+            <h2>How to use this practice guide</h2>
+            <p>Use one assignment per day when you are busy, or three assignments per session when you want a deeper practice block. For best memory retention, type the commands manually instead of copying them. Before opening an answer, write your own command sequence in a scratch file.</p>
+            <div class="grid three">
+                <div>
+                    <h4>Daily rhythm</h4>
+                    <ol>
+                        <li>Read the scenario.</li>
+                        <li>Try the task without the answer.</li>
+                        <li>Run <code>git status</code> often.</li>
+                        <li>Open the answer and compare.</li>
+                        <li>Repeat the command from memory once.</li>
+                    </ol>
+                </div>
+                <div>
+                    <h4>Practice rule</h4>
+                    <p>Always use a sandbox repository. Never practice destructive commands such as <code>reset --hard</code> or <code>clean -fd</code> inside important work unless you understand the result.</p>
+                </div>
+                <div>
+                    <h4>Best habit</h4>
+                    <p>Use <code>git status</code>, <code>git diff</code>, and <code>git log --oneline --graph --decorate --all</code> constantly. These commands tell you where you are before you change history.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="setup" class="card">
+            <h2>One-time setup for the practice environment</h2>
+            <p>Run these commands once in a safe folder. The assignments below assume your main practice repository is named <code>daily-notes</code>.</p>
+            <pre><code># Check that Git is installed
+git --version
+# Configure the name recorded in your commits
+git config --global user.name "Your Name"
+# Configure the email recorded in your commits
+git config --global user.email "you@example.com"
+# Use main as the default branch name for new repositories
+git config --global init.defaultBranch main
+# Create a parent folder for all Git practice repositories
+mkdir git-practice-lab
+# Move into the parent folder
+cd git-practice-lab</code></pre>
+            <p class="muted">Tip: If you already have a global Git config, you can still use this lab safely. These commands only set common beginner-friendly defaults.</p>
+        </section>
+
+        <section id="mental-model" class="card">
+            <h2>The Git mental model you should memorize</h2>
+            <div class="grid two">
+                <div>
+                    <h4>Four important places</h4>
+                    <table>
+                        <thead><tr><th>Place</th><th>Meaning</th><th>Common commands</th></tr></thead>
+                        <tbody>
+                            <tr><td>Working directory</td><td>Your actual files on disk.</td><td><code>git status</code>, <code>git diff</code>, <code>git restore</code></td></tr>
+                            <tr><td>Staging area / index</td><td>The next snapshot you are preparing.</td><td><code>git add</code>, <code>git restore --staged</code>, <code>git diff --staged</code></td></tr>
+                            <tr><td>Local repository</td><td>Your commit history stored in <code>.git</code>.</td><td><code>git commit</code>, <code>git log</code>, <code>git show</code></td></tr>
+                            <tr><td>Remote repository</td><td>A shared copy, such as GitHub, GitLab, or a local bare repository.</td><td><code>git fetch</code>, <code>git pull</code>, <code>git push</code></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <h4>Simple memory map</h4>
+                    <pre><code># See what changed and where you are
+git status
+# Move selected file changes into the next snapshot
+git add file.txt
+# Save the staged snapshot to local history
+git commit -m "type: clear message"
+# Download remote history without merging
+git fetch origin
+# Merge remote changes into the current branch
+git pull
+# Upload local commits to the remote
+git push</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section id="cheat-sheet" class="card">
+            <h2>Command cheat sheet by scenario</h2>
+            <table>
+                <thead><tr><th>Scenario</th><th>Command</th><th>Use when</th></tr></thead>
+                <tbody>
+                    <tr><td>Start project</td><td><code>git init</code></td><td>You want Git history inside an existing folder.</td></tr>
+                    <tr><td>Copy project</td><td><code>git clone URL</code></td><td>You want a working copy of an existing repository.</td></tr>
+                    <tr><td>Check state</td><td><code>git status</code></td><td>You are unsure what changed.</td></tr>
+                    <tr><td>See unstaged changes</td><td><code>git diff</code></td><td>You edited files but have not staged them.</td></tr>
+                    <tr><td>See staged changes</td><td><code>git diff --staged</code></td><td>You want to review the next commit.</td></tr>
+                    <tr><td>Stage file</td><td><code>git add file</code></td><td>You want a file included in the next commit.</td></tr>
+                    <tr><td>Commit</td><td><code>git commit -m "message"</code></td><td>You want to save the staged snapshot.</td></tr>
+                    <tr><td>New branch</td><td><code>git switch -c branch</code></td><td>You want isolated work.</td></tr>
+                    <tr><td>Switch branch</td><td><code>git switch branch</code></td><td>You want to move to another branch.</td></tr>
+                    <tr><td>Merge branch</td><td><code>git merge branch</code></td><td>You want to integrate another branch into the current branch.</td></tr>
+                    <tr><td>Download remote updates</td><td><code>git fetch origin</code></td><td>You want to inspect remote changes first.</td></tr>
+                    <tr><td>Download and integrate</td><td><code>git pull</code></td><td>You want remote changes merged/rebased into the current branch.</td></tr>
+                    <tr><td>Upload commits</td><td><code>git push</code></td><td>You want to share local commits.</td></tr>
+                    <tr><td>Unstage file</td><td><code>git restore --staged file</code></td><td>You staged a file by mistake.</td></tr>
+                    <tr><td>Discard file edit</td><td><code>git restore file</code></td><td>You want to throw away uncommitted edits in one file.</td></tr>
+                    <tr><td>Undo public commit</td><td><code>git revert HASH</code></td><td>You need a safe undo commit in shared history.</td></tr>
+                    <tr><td>Rewrite latest local commit</td><td><code>git commit --amend</code></td><td>You need to fix the latest local commit before sharing.</td></tr>
+                    <tr><td>Temporarily save WIP</td><td><code>git stash push -m "message"</code></td><td>You need a clean tree quickly.</td></tr>
+                    <tr><td>Recover lost-looking commit</td><td><code>git reflog</code></td><td>You need to find where HEAD used to point.</td></tr>
+                    <tr><td>Move one commit</td><td><code>git cherry-pick HASH</code></td><td>You need one specific commit from another branch.</td></tr>
+                    <tr><td>Replay branch</td><td><code>git rebase main</code></td><td>You want your branch commits placed on top of main.</td></tr>
+                    <tr><td>Find bug commit</td><td><code>git bisect</code></td><td>You need to locate the commit that introduced a failure.</td></tr>
+                    <tr><td>Parallel checkout</td><td><code>git worktree</code></td><td>You need two branches checked out at the same time.</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="daily-plan" class="card">
+            <h2>48-assignment daily practice plan</h2>
+            <p>Complete one assignment per day for a 48-day cycle, or combine two assignments per day for a 24-day cycle. On the second cycle, do the same assignments without opening answers until the end.</p>
+            <table>
+                <thead><tr><th>Days</th><th>Focus</th><th>Assignment numbers</th><th>Memory goal</th></tr></thead>
+                <tbody>
+                    <tr><td>1-5</td><td>Repository basics</td><td>01-05</td><td>Understand working tree, staging area, commits.</td></tr>
+                    <tr><td>6-10</td><td>History and safe basics</td><td>06-10</td><td>Read logs, compare diffs, restore safely.</td></tr>
+                    <tr><td>11-16</td><td>Branching and merging</td><td>11-16</td><td>Create branches, merge, resolve conflicts, stash.</td></tr>
+                    <tr><td>17-20</td><td>Remote workflow</td><td>17-20</td><td>Fetch, pull, push, tracking branches, cleanup.</td></tr>
+                    <tr><td>21-28</td><td>Undo and recovery</td><td>21-28</td><td>Unstage, restore, amend, reset, revert, reflog, cherry-pick.</td></tr>
+                    <tr><td>29-34</td><td>Rebase and history shaping</td><td>29-34</td><td>Rebase, squash, reword, resolve, abort.</td></tr>
+                    <tr><td>35-38</td><td>Release and debugging</td><td>35-38</td><td>Annotated tags, hotfixes, manual bisect, automated bisect.</td></tr>
+                    <tr><td>39-42</td><td>Parallel work and investigation</td><td>39-42</td><td>Worktrees, patches, blame, detached HEAD recovery.</td></tr>
+                    <tr><td>43-48</td><td>Collaboration safety and polish</td><td>43-48</td><td>Fork-style remotes, secret response, aliases, complete workflow.</td></tr>
+                </tbody>
+            </table>
+            <div class="checklist">
+                <h4>Daily self-check</h4>
+                <label><input type="checkbox"> I ran <code>git status</code> before making decisions.</label>
+                <label><input type="checkbox"> I reviewed <code>git diff</code> before committing.</label>
+                <label><input type="checkbox"> I wrote a meaningful commit message.</label>
+                <label><input type="checkbox"> I opened the answer only after trying first.</label>
+                <label><input type="checkbox"> I repeated the main command from memory once.</label>
+            </div>
+        </section>
+
+        <section id="danger-zone" class="card danger">
+            <h2>Commands to respect</h2>
+            <p>These commands are powerful. They are not bad, but they can discard or rewrite work when used carelessly.</p>
+            <table>
+                <thead><tr><th>Command</th><th>Risk</th><th>Safer habit</th></tr></thead>
+                <tbody>
+                    <tr><td><code>git reset --hard</code></td><td>Discards uncommitted changes and moves the current branch.</td><td>Run <code>git status</code>, <code>git diff</code>, and consider a temporary commit or stash first.</td></tr>
+                    <tr><td><code>git clean -fd</code></td><td>Deletes untracked files and folders.</td><td>Preview first with <code>git clean -nd</code>.</td></tr>
+                    <tr><td><code>git push --force</code></td><td>Can overwrite shared remote history.</td><td>Prefer <code>--force-with-lease</code> only when team workflow allows rewriting.</td></tr>
+                    <tr><td><code>git rebase</code></td><td>Rewrites commit hashes for the rebased commits.</td><td>Use freely on private local branches; coordinate before rebasing shared branches.</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class='level' id='level-1---beginner-foundations'><h2>Level 1 - Beginner Foundations</h2>
+        <article class="card assignment" id="assignment-01">
+            <div class="assignment-head">
+                <span class="badge">Assignment 01</span>
+                <h3>Create your first repository and first commit</h3>
+            </div>
+            <p><strong>Scenario:</strong> You started a new personal notes project and want Git to track it from day one.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Initialize a repository</li>
+<li>Create a file</li>
+<li>Stage and commit the first snapshot</li>
+<li>Inspect the commit history</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create a folder named daily-notes.</li>
+<li>Initialize Git inside it.</li>
+<li>Create README.md with one sentence.</li>
+<li>Commit it with a clear message.</li>
+<li>View the log in one-line format.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Create a practice folder for the project
+mkdir daily-notes
+# Move into the project folder
+cd daily-notes
+# Start a new Git repository in the current folder
+git init
+# Create the first tracked file with simple content
+echo &quot;# Daily Notes&quot; &gt; README.md
+# Show the current Git state before staging
+git status
+# Add README.md to the staging area
+git add README.md
+# Save the staged snapshot as a commit
+git commit -m &quot;docs: add project readme&quot;
+# Show compact commit history
+git log --oneline</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>git status should say the working tree is clean.</li>
+<li>git log --oneline should show one commit.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Running git init in the wrong folder</li>
+<li>Forgetting to stage before committing</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-02">
+            <div class="assignment-head">
+                <span class="badge">Assignment 02</span>
+                <h3>Understand modified, staged, and committed states</h3>
+            </div>
+            <p><strong>Scenario:</strong> You edited a file and need to understand where the changes are: working directory, staging area, or repository history.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Read git status</li>
+<li>Use git diff</li>
+<li>Use git diff --staged</li>
+<li>Commit staged changes</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Edit README.md twice.</li>
+<li>Stage only after the first meaningful change.</li>
+<li>Compare unstaged and staged changes.</li>
+<li>Commit the staged version.</li>
+<li>Check what remains unstaged.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Add a first change to README.md
+echo &quot;Today I practiced Git basics.&quot; &gt;&gt; README.md
+# See the unstaged modification
+git status
+# See exact unstaged line changes
+git diff
+# Stage the current README.md change
+git add README.md
+# Add another change after staging
+echo &quot;Tomorrow I will practice branches.&quot; &gt;&gt; README.md
+# See staged and unstaged areas separately
+git status
+# See only unstaged changes
+git diff
+# See only staged changes
+git diff --staged
+# Commit only the staged snapshot
+git commit -m &quot;docs: add first practice note&quot;
+# Confirm the second change is still unstaged
+git status</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>After commit, README.md should still be modified because of the second line.</li>
+<li>git diff --staged should be empty after the commit.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Thinking git commit saves every file automatically</li>
+<li>Not checking git diff before committing</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-03">
+            <div class="assignment-head">
+                <span class="badge">Assignment 03</span>
+                <h3>Stage selected files only</h3>
+            </div>
+            <p><strong>Scenario:</strong> You changed documentation and source code, but you only want to commit the documentation right now.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Stage selected paths</li>
+<li>Keep unrelated changes out of a commit</li>
+<li>Create clean atomic commits</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create docs.md and app.js.</li>
+<li>Stage only docs.md.</li>
+<li>Commit only the documentation.</li>
+<li>Verify app.js is still untracked or unstaged.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Create a documentation file
+echo &quot;# Documentation&quot; &gt; docs.md
+# Create a source file
+echo &quot;console.log(&#x27;practice&#x27;);&quot; &gt; app.js
+# Review all current changes
+git status
+# Stage only the documentation file
+git add docs.md
+# Confirm only docs.md is staged
+git status
+# Commit only the staged documentation file
+git commit -m &quot;docs: add documentation outline&quot;
+# Confirm app.js is not included in that commit
+git status</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>git show --name-only --oneline HEAD should list docs.md but not app.js.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Using git add . when you intended to stage one file</li>
+<li>Mixing unrelated changes in one commit</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-04">
+            <div class="assignment-head">
+                <span class="badge">Assignment 04</span>
+                <h3>Ignore generated and private files</h3>
+            </div>
+            <p><strong>Scenario:</strong> Your project creates logs and local environment files that should not be committed.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Create .gitignore</li>
+<li>Ignore logs</li>
+<li>Ignore environment files</li>
+<li>Commit ignore rules</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create app.log and .env.</li>
+<li>Create .gitignore rules for both.</li>
+<li>Verify Git ignores the files.</li>
+<li>Commit .gitignore.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Create a generated log file that should not be tracked
+echo &quot;debug log&quot; &gt; app.log
+# Create a private environment file that should not be tracked
+echo &quot;API_KEY=practice-only&quot; &gt; .env
+# Create ignore rules for logs and environment files
+printf &quot;*.log\n.env\n&quot; &gt; .gitignore
+# Check whether app.log and .env are hidden from normal status
+git status
+# Stage only the ignore rules
+git add .gitignore
+# Commit the ignore rules
+git commit -m &quot;chore: ignore local generated files&quot;
+# Confirm ignored files explicitly when needed
+git status --ignored</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>Normal git status should not show app.log or .env.</li>
+<li>git status --ignored should show ignored files.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Ignoring a file after it has already been tracked without removing it from the index</li>
+<li>Committing secrets accidentally</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-05">
+            <div class="assignment-head">
+                <span class="badge">Assignment 05</span>
+                <h3>Rename and delete files safely</h3>
+            </div>
+            <p><strong>Scenario:</strong> You are cleaning up project file names and removing old files while keeping history understandable.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Use git mv</li>
+<li>Use git rm</li>
+<li>Commit file structure changes</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Track app.js if it is not already committed.</li>
+<li>Rename app.js to main.js.</li>
+<li>Create old-notes.txt and commit it.</li>
+<li>Remove old-notes.txt using Git.</li>
+<li>Commit the deletion.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Stage app.js if it is still untracked
+git add app.js
+# Commit app.js as a source file
+git commit -m &quot;feat: add starter script&quot;
+# Rename the file through Git so status is clear
+git mv app.js main.js
+# Review the rename before committing
+git status
+# Commit the rename
+git commit -m &quot;refactor: rename app entry file&quot;
+# Create an old file for deletion practice
+echo &quot;temporary notes&quot; &gt; old-notes.txt
+# Stage the new old file
+git add old-notes.txt
+# Commit the old file so deletion is tracked later
+git commit -m &quot;docs: add temporary notes&quot;
+# Remove the tracked file through Git
+git rm old-notes.txt
+# Commit the deletion
+git commit -m &quot;chore: remove temporary notes</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>git log --name-status --oneline should show the rename and deletion.</li>
+<li>main.js should exist and old-notes.txt should not.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Deleting a tracked file manually and forgetting to stage the deletion</li>
+<li>Renaming files outside Git and not checking status</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-06">
+            <div class="assignment-head">
+                <span class="badge">Assignment 06</span>
+                <h3>Read history like a developer</h3>
+            </div>
+            <p><strong>Scenario:</strong> You joined a project and need to quickly understand what changed recently.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Use git log variants</li>
+<li>Inspect one commit</li>
+<li>List changed files</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>View a compact history graph.</li>
+<li>Inspect the latest commit details.</li>
+<li>Show only file names changed in the latest commit.</li>
+<li>Show changes introduced by the latest commit.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Show all branches in a compact visual graph
+git log --oneline --graph --decorate --all
+# Show full details for the latest commit
+git show HEAD
+# Show only files changed by the latest commit
+git show --name-only --oneline HEAD
+# Show a summary of changed file counts
+git show --stat HEAD
+# Show the previous five commits in a compact format
+git log --oneline -5</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>You should be able to explain the latest commit message and changed files.</li>
+<li>You should recognize HEAD as the current commit.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Only memorizing commands without reading the output</li>
+<li>Ignoring commit messages</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-07">
+            <div class="assignment-head">
+                <span class="badge">Assignment 07</span>
+                <h3>Compare versions with diff</h3>
+            </div>
+            <p><strong>Scenario:</strong> You need to compare what changed before deciding what to commit.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Compare working tree changes</li>
+<li>Compare staged changes</li>
+<li>Compare commits</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Modify main.js.</li>
+<li>View unstaged diff.</li>
+<li>Stage the file.</li>
+<li>View staged diff.</li>
+<li>Compare HEAD with the previous commit.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Add a small source change
+echo &quot;console.log(&#x27;diff practice&#x27;);&quot; &gt;&gt; main.js
+# Show unstaged changes
+git diff
+# Stage the source file
+git add main.js
+# Show staged changes
+git diff --staged
+# Commit the staged change
+git commit -m &quot;feat: add diff practice output&quot;
+# Compare latest commit with the commit before it
+git diff HEAD~1 HEAD</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>git diff should be empty after staging.</li>
+<li>git diff --staged should show changes before commit.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Committing before reviewing diff</li>
+<li>Confusing git diff with git status</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-08">
+            <div class="assignment-head">
+                <span class="badge">Assignment 08</span>
+                <h3>Restore a file from the last commit</h3>
+            </div>
+            <p><strong>Scenario:</strong> You accidentally edited a tracked file and want to discard that uncommitted edit.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Discard working tree changes</li>
+<li>Understand restore safety</li>
+<li>Practice before using risky commands</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Add a bad line to README.md.</li>
+<li>View the diff.</li>
+<li>Discard only README.md changes.</li>
+<li>Confirm the file is clean.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Add an unwanted line to README.md
+echo &quot;BAD EXPERIMENT&quot; &gt;&gt; README.md
+# Confirm the unwanted change exists
+git diff README.md
+# Discard uncommitted changes in README.md
+git restore README.md
+# Verify README.md is clean again
+git status
+# Confirm no diff remains for README.md
+git diff README.md</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>README.md should no longer contain BAD EXPERIMENT.</li>
+<li>git status should not list README.md as modified.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Using restore on work you actually needed</li>
+<li>Running a broad restore without checking diff</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-09">
+            <div class="assignment-head">
+                <span class="badge">Assignment 09</span>
+                <h3>Create a lightweight tag</h3>
+            </div>
+            <p><strong>Scenario:</strong> You want to mark a simple practice milestone in history.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Create a tag</li>
+<li>List tags</li>
+<li>Inspect tagged commit</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create a tag named practice-day-1.</li>
+<li>List all tags.</li>
+<li>Show the commit pointed to by the tag.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Create a simple lightweight tag at the current commit
+git tag practice-day-1
+# List available tags
+git tag
+# Show the commit referenced by the tag
+git show practice-day-1 --stat</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>git tag should list practice-day-1.</li>
+<li>git show practice-day-1 should display the current commit.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Using tags for every commit instead of meaningful milestones</li>
+<li>Forgetting to push tags when using remotes</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-10">
+            <div class="assignment-head">
+                <span class="badge">Assignment 10</span>
+                <h3>Create a clean commit message habit</h3>
+            </div>
+            <p><strong>Scenario:</strong> You want your history to be readable even after months away from the project.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Write meaningful commit messages</li>
+<li>Practice small commits</li>
+<li>Use a consistent prefix style</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create three small changes.</li>
+<li>Commit each separately.</li>
+<li>Use feat:, fix:, docs:, refactor:, test:, or chore: prefixes.</li>
+<li>Read the log and verify the story is clear.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Add a feature note
+echo &quot;Feature idea: daily Git reminders.&quot; &gt;&gt; docs.md
+# Stage only docs.md
+git add docs.md
+# Commit the documentation feature idea
+git commit -m &quot;docs: add daily reminder idea&quot;
+# Add a small source improvement
+echo &quot;console.log(&#x27;clean commits&#x27;);&quot; &gt;&gt; main.js
+# Stage only main.js
+git add main.js
+# Commit the source improvement
+git commit -m &quot;feat: log clean commit practice&quot;
+# Add a maintenance note
+echo &quot;Remember to review status before committing.&quot; &gt;&gt; README.md
+# Stage only README.md
+git add README.md
+# Commit the maintenance note
+git commit -m &quot;docs: add status reminder&quot;
+# Read the recent history as a story
+git log --oneline -5</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>Each commit should describe one idea.</li>
+<li>git log should be understandable without opening every diff.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Commit messages like update or changes</li>
+<li>Large commits containing unrelated work</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        </section><section class='level' id='level-2---branching-and-local-collaboration'><h2>Level 2 - Branching and Local Collaboration</h2>
+        <article class="card assignment" id="assignment-11">
+            <div class="assignment-head">
+                <span class="badge">Assignment 11</span>
+                <h3>Create and switch to a feature branch</h3>
+            </div>
+            <p><strong>Scenario:</strong> You want to develop a new idea without disturbing the main branch.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Create a branch</li>
+<li>Switch branches</li>
+<li>Commit on a branch</li>
+<li>Return to main</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create feature/navigation-notes.</li>
+<li>Add a file on that branch.</li>
+<li>Commit it.</li>
+<li>Switch back to main and observe the file difference.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Create and switch to a new feature branch
+git switch -c feature/navigation-notes
+# Add a feature-specific file
+echo &quot;Navigation notes feature&quot; &gt; navigation.md
+# Stage the feature file
+git add navigation.md
+# Commit the feature work
+git commit -m &quot;feat: add navigation notes&quot;
+# Switch back to the main branch
+git switch main
+# Confirm navigation.md is absent on main before merge
+ls
+# Switch back to the feature branch to continue if needed
+git switch feature/navigation-notes</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>git branch should show the current branch with an asterisk.</li>
+<li>navigation.md should appear on the feature branch but not on main before merge.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Creating commits on main accidentally</li>
+<li>Forgetting which branch is active</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-12">
+            <div class="assignment-head">
+                <span class="badge">Assignment 12</span>
+                <h3>Merge a feature branch into main</h3>
+            </div>
+            <p><strong>Scenario:</strong> Your feature is ready and needs to be integrated into the stable branch.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Merge branches</li>
+<li>Understand fast-forward merge</li>
+<li>Clean up merged branch</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Switch to main.</li>
+<li>Merge feature/navigation-notes.</li>
+<li>Delete the feature branch after merge.</li>
+<li>View graph history.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Switch to the integration branch
+git switch main
+# Merge the completed feature branch into main
+git merge feature/navigation-notes
+# Delete the local feature branch after successful merge
+git branch -d feature/navigation-notes
+# View the resulting history graph
+git log --oneline --graph --decorate --all</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>navigation.md should exist on main after merge.</li>
+<li>git branch should no longer list feature/navigation-notes.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Deleting a branch before merging</li>
+<li>Merging while on the wrong target branch</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-13">
+            <div class="assignment-head">
+                <span class="badge">Assignment 13</span>
+                <h3>Create a merge commit deliberately</h3>
+            </div>
+            <p><strong>Scenario:</strong> You want to preserve the fact that a feature was developed separately.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Use --no-ff</li>
+<li>Understand merge commits</li>
+<li>Read graph history</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create feature/reporting.</li>
+<li>Commit a file on it.</li>
+<li>Switch to main.</li>
+<li>Merge using --no-ff.</li>
+<li>Inspect the graph.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Create and enter a new feature branch
+git switch -c feature/reporting
+# Add a reporting note
+echo &quot;Reporting feature notes&quot; &gt; reporting.md
+# Stage the reporting note
+git add reporting.md
+# Commit the reporting feature
+git commit -m &quot;feat: add reporting notes&quot;
+# Return to main before merging
+git switch main
+# Merge with an explicit merge commit
+git merge --no-ff feature/reporting -m &quot;merge: integrate reporting feature&quot;
+# Inspect the branch structure
+git log --oneline --graph --decorate --all
+# Delete the merged branch
+git branch -d feature/reporting</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>The log graph should show a merge commit with two parents.</li>
+<li>reporting.md should be present on main.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Using --no-ff without a reason</li>
+<li>Not reading merge output</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-14">
+            <div class="assignment-head">
+                <span class="badge">Assignment 14</span>
+                <h3>Resolve a simple merge conflict</h3>
+            </div>
+            <p><strong>Scenario:</strong> Two branches changed the same line in the same file, and Git needs your decision.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Create a conflict</li>
+<li>Read conflict markers</li>
+<li>Resolve and commit</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create conflict-demo.md on main and commit it.</li>
+<li>Create branch feature/conflict-a and edit the same line.</li>
+<li>Edit the same line differently on main.</li>
+<li>Merge feature/conflict-a into main.</li>
+<li>Resolve the conflict and complete the merge.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Ensure you are on main
+git switch main
+# Create a file with one shared line
+echo &quot;Title: Original&quot; &gt; conflict-demo.md
+# Stage the conflict demo file
+git add conflict-demo.md
+# Commit the original file
+git commit -m &quot;docs: add conflict demo file&quot;
+# Create a branch for one version of the change
+git switch -c feature/conflict-a
+# Change the same line on the feature branch
+printf &quot;Title: Feature Version\n&quot; &gt; conflict-demo.md
+# Stage the feature change
+git add conflict-demo.md
+# Commit the feature version
+git commit -m &quot;docs: update title on feature branch&quot;
+# Return to main
+git switch main
+# Change the same line differently on main
+printf &quot;Title: Main Version\n&quot; &gt; conflict-demo.md
+# Stage the main change
+git add conflict-demo.md
+# Commit the main version
+git commit -m &quot;docs: update title on main&quot;
+# Merge the feature branch and create a conflict
+git merge feature/conflict-a
+# Open conflict-demo.md and manually choose the final content
+printf &quot;Title: Combined Version\n&quot; &gt; conflict-demo.md
+# Stage the resolved file
+git add conflict-demo.md
+# Complete the merge commit
+git commit -m &quot;merge: resolve title conflict&quot;
+# Delete the merged conflict branch
+git branch -d feature/conflict-a</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>git status should say all conflicts are fixed before the merge commit.</li>
+<li>conflict-demo.md should not contain &lt;&lt;&lt;&lt;&lt;&lt;&lt;, =======, or &gt;&gt;&gt;&gt;&gt;&gt;&gt; markers.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Committing conflict markers</li>
+<li>Resolving the file but forgetting git add</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-15">
+            <div class="assignment-head">
+                <span class="badge">Assignment 15</span>
+                <h3>Use stash before switching tasks</h3>
+            </div>
+            <p><strong>Scenario:</strong> You are halfway through a change, but an urgent task needs a clean branch.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Save work in progress</li>
+<li>Switch branches safely</li>
+<li>Restore stashed work</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Modify README.md without committing.</li>
+<li>Stash the work with a message.</li>
+<li>Switch to main or another branch.</li>
+<li>List stashes.</li>
+<li>Apply or pop the stash.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Modify README.md with unfinished work
+echo &quot;Unfinished idea&quot; &gt;&gt; README.md
+# Confirm the working tree is dirty
+git status
+# Save unfinished work in a named stash
+git stash push -m &quot;wip: unfinished readme idea&quot;
+# Confirm the working tree is clean
+git status
+# Switch branches safely now that changes are stashed
+git switch main
+# List available stashes
+git stash list
+# Reapply and remove the latest stash
+git stash pop
+# Review the restored change
+git diff README.md</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>git stash list should show the stash before pop.</li>
+<li>README.md changes should return after git stash pop.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Stashing untracked files without using -u when needed</li>
+<li>Popping a stash onto the wrong branch</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-16">
+            <div class="assignment-head">
+                <span class="badge">Assignment 16</span>
+                <h3>Stash untracked files too</h3>
+            </div>
+            <p><strong>Scenario:</strong> Your work in progress includes a new file, and you need to switch branches without losing it.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Use git stash -u</li>
+<li>Restore untracked files</li>
+<li>Drop stash intentionally</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create a new untracked file experimental.md.</li>
+<li>Stash it including untracked files.</li>
+<li>Verify it disappears from the working tree.</li>
+<li>Apply the stash.</li>
+<li>Drop the stash if it remains.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Create an untracked file
+echo &quot;experiment&quot; &gt; experimental.md
+# Confirm the file is untracked
+git status
+# Stash tracked and untracked changes together
+git stash push -u -m &quot;wip: include experimental file&quot;
+# Confirm experimental.md is removed from the working tree
+ls
+# List stashes
+git stash list
+# Apply the stash without dropping it
+git stash apply stash@{0}
+# Confirm experimental.md returned
+ls
+# Drop the stash manually after confirming the work is restored
+git stash drop stash@{0}</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>experimental.md should disappear after stash and return after apply.</li>
+<li>git stash list should be clean after drop if no other stashes exist.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Expecting normal git stash to include untracked files</li>
+<li>Dropping a stash before confirming restored work</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-17">
+            <div class="assignment-head">
+                <span class="badge">Assignment 17</span>
+                <h3>Create a local remote and push to it</h3>
+            </div>
+            <p><strong>Scenario:</strong> You want to practice remote commands without GitHub, GitLab, or internet access.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Create a bare repository</li>
+<li>Add a remote</li>
+<li>Push a branch</li>
+<li>Understand origin</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create a bare repository beside your project.</li>
+<li>Add it as origin.</li>
+<li>Push main and set upstream.</li>
+<li>Confirm remote branches.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Move one level above your project folder
+cd ..
+# Create a bare repository to act like a remote server
+git init --bare remote-practice.git
+# Move back into your project folder
+cd daily-notes
+# Add the bare repository as a remote named origin
+git remote add origin ../remote-practice.git
+# Push main and set upstream tracking
+git push -u origin main
+# List remote names and URLs
+git remote -v
+# Show remote-tracking branches
+git branch -r</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>git remote -v should show origin.</li>
+<li>git branch -r should show origin/main after push.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Creating the bare remote inside the working repository</li>
+<li>Forgetting -u, then wondering why push needs arguments later</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-18">
+            <div class="assignment-head">
+                <span class="badge">Assignment 18</span>
+                <h3>Clone the remote as a second developer</h3>
+            </div>
+            <p><strong>Scenario:</strong> You need to simulate another teammate making changes from another computer.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Clone a repository</li>
+<li>Commit from another clone</li>
+<li>Push back to origin</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Clone remote-practice.git into teammate-copy.</li>
+<li>Make a commit in teammate-copy.</li>
+<li>Push it to origin.</li>
+<li>Fetch it from your original daily-notes project.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Move one level above the original project
+cd ..
+# Clone the bare remote into a second working copy
+git clone remote-practice.git teammate-copy
+# Enter the teammate clone
+cd teammate-copy
+# Add a teammate change
+echo &quot;Teammate note&quot; &gt;&gt; README.md
+# Stage the teammate change
+git add README.md
+# Commit the teammate change
+git commit -m &quot;docs: add teammate note&quot;
+# Push the teammate change to origin
+git push
+# Return to the original project
+cd ../daily-notes
+# Download remote changes without merging yet
+git fetch origin
+# Compare local main with remote main
+git log --oneline --graph --decorate --all --max-count=10</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>The original project should see origin/main ahead after fetch.</li>
+<li>The teammate-copy should push without specifying origin main because upstream is set.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Confusing local branch main with remote-tracking branch origin/main</li>
+<li>Expecting fetch to automatically modify local files</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-19">
+            <div class="assignment-head">
+                <span class="badge">Assignment 19</span>
+                <h3>Understand fetch versus pull</h3>
+            </div>
+            <p><strong>Scenario:</strong> A teammate pushed changes, and you want to inspect before integrating them.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Fetch safely</li>
+<li>Compare branches</li>
+<li>Pull when ready</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Fetch origin.</li>
+<li>Inspect origin/main.</li>
+<li>Compare main..origin/main.</li>
+<li>Pull when ready.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Download remote branch updates without touching local files
+git fetch origin
+# Show commits on origin/main that local main does not have
+git log --oneline main..origin/main
+# Show file changes between local main and origin/main
+git diff main..origin/main
+# Merge the remote changes into the current local branch
+git pull
+# Confirm local main caught up
+git status</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>After pull, local main should include the teammate note.</li>
+<li>git log main..origin/main should be empty after catching up.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Using pull blindly without reviewing incoming changes</li>
+<li>Thinking fetch and pull are identical</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-20">
+            <div class="assignment-head">
+                <span class="badge">Assignment 20</span>
+                <h3>Push a feature branch to the remote</h3>
+            </div>
+            <p><strong>Scenario:</strong> You want teammates to review your feature branch before merging.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Create a branch</li>
+<li>Push branch upstream</li>
+<li>Track remote branch</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create feature/review-demo.</li>
+<li>Commit a change.</li>
+<li>Push it to origin with upstream tracking.</li>
+<li>List local and remote branches.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Create and switch to a review branch
+git switch -c feature/review-demo
+# Add review demo content
+echo &quot;Review demo&quot; &gt; review-demo.md
+# Stage the review file
+git add review-demo.md
+# Commit the review branch change
+git commit -m &quot;feat: add review demo&quot;
+# Push the branch and set upstream
+git push -u origin feature/review-demo
+# Show local branches with upstream info
+git branch -vv
+# Show remote branches
+git branch -r</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>git branch -vv should show feature/review-demo tracking origin/feature/review-demo.</li>
+<li>The remote branch should appear in git branch -r.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Pushing to main instead of the feature branch</li>
+<li>Forgetting to set upstream on first push</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-21">
+            <div class="assignment-head">
+                <span class="badge">Assignment 21</span>
+                <h3>Delete local and remote branches after merge</h3>
+            </div>
+            <p><strong>Scenario:</strong> A feature branch has been merged and should be cleaned up locally and remotely.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Merge feature branch</li>
+<li>Delete local branch</li>
+<li>Delete remote branch</li>
+<li>Prune remote-tracking refs</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Merge feature/review-demo into main.</li>
+<li>Delete the local feature branch.</li>
+<li>Delete the remote feature branch.</li>
+<li>Prune stale remote tracking references.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Switch to the target branch
+git switch main
+# Merge the feature branch into main
+git merge feature/review-demo
+# Push the updated main branch
+git push
+# Delete the local feature branch
+git branch -d feature/review-demo
+# Delete the branch from the remote
+git push origin --delete feature/review-demo
+# Remove stale remote-tracking references
+git fetch --prune
+# Confirm cleanup
+git branch -a</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>feature/review-demo should not appear locally or under remotes/origin after prune.</li>
+<li>main should contain review-demo.md.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Deleting a branch before merging it</li>
+<li>Using -D when -d warns that the branch is unmerged</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        </section><section class='level' id='level-3---undo--repair--and-recovery'><h2>Level 3 - Undo, Repair, and Recovery</h2>
+        <article class="card assignment" id="assignment-22">
+            <div class="assignment-head">
+                <span class="badge">Assignment 22</span>
+                <h3>Unstage a file without losing work</h3>
+            </div>
+            <p><strong>Scenario:</strong> You staged a file by accident, but the edits are still useful and should remain in your working directory.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Use git restore --staged</li>
+<li>Separate staged and unstaged changes</li>
+<li>Avoid destructive commands</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Modify README.md and main.js.</li>
+<li>Stage both files.</li>
+<li>Unstage main.js only.</li>
+<li>Commit README.md only.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Add a documentation change
+echo &quot;Unstage practice note&quot; &gt;&gt; README.md
+# Add a source change
+echo &quot;console.log(&#x27;unstage practice&#x27;);&quot; &gt;&gt; main.js
+# Stage both files by mistake
+git add README.md main.js
+# Unstage only main.js while keeping its working tree changes
+git restore --staged main.js
+# Confirm README.md is staged and main.js is unstaged
+git status
+# Commit only the staged README.md change
+git commit -m &quot;docs: add unstage practice note&quot;
+# Confirm main.js still has local changes
+git status</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>main.js should remain modified after the commit.</li>
+<li>README.md should be committed.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Using git restore main.js and losing the working edit</li>
+<li>Using reset --hard for a simple unstage task</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-23">
+            <div class="assignment-head">
+                <span class="badge">Assignment 23</span>
+                <h3>Discard one file&#x27;s uncommitted changes</h3>
+            </div>
+            <p><strong>Scenario:</strong> A source edit went in the wrong direction, but your documentation edits are still valuable.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Discard selected file changes</li>
+<li>Protect unrelated work</li>
+<li>Use diff before restore</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Modify README.md and main.js.</li>
+<li>Discard only main.js changes.</li>
+<li>Keep README.md changes.</li>
+<li>Commit README.md.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Add a useful documentation change
+echo &quot;Keep this documentation update.&quot; &gt;&gt; README.md
+# Add an unwanted source change
+echo &quot;console.log(&#x27;bad idea&#x27;);&quot; &gt;&gt; main.js
+# Review the unwanted source diff
+git diff main.js
+# Discard only main.js changes
+git restore main.js
+# Stage the useful documentation change
+git add README.md
+# Commit the useful documentation change
+git commit -m &quot;docs: keep useful update&quot;
+# Confirm main.js is clean
+git status</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>README.md update should be committed.</li>
+<li>main.js should not include bad idea.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Discarding all files when only one file was bad</li>
+<li>Skipping git diff before restore</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-24">
+            <div class="assignment-head">
+                <span class="badge">Assignment 24</span>
+                <h3>Fix the latest commit with amend</h3>
+            </div>
+            <p><strong>Scenario:</strong> You made a commit but forgot one small file or used an unclear message.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Amend latest commit</li>
+<li>Change latest message</li>
+<li>Understand local-history rewriting</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create a commit with an incomplete change.</li>
+<li>Add the missing file or line.</li>
+<li>Amend the latest commit.</li>
+<li>Inspect the final commit.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Create a file for amend practice
+echo &quot;Amend practice&quot; &gt; amend.md
+# Stage the file
+git add amend.md
+# Commit with a message that can be improved
+git commit -m &quot;update amend&quot;
+# Add the forgotten detail
+echo &quot;Forgotten detail&quot; &gt;&gt; amend.md
+# Stage the forgotten detail
+git add amend.md
+# Replace the latest commit with an improved commit
+git commit --amend -m &quot;docs: add amend practice note&quot;
+# Inspect the amended commit
+git show --stat HEAD</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>The latest commit message should be improved.</li>
+<li>amend.md should include both lines.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Amending commits already shared with teammates without coordination</li>
+<li>Using amend when a new follow-up commit would be clearer</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-25">
+            <div class="assignment-head">
+                <span class="badge">Assignment 25</span>
+                <h3>Practice soft, mixed, and hard reset safely</h3>
+            </div>
+            <p><strong>Scenario:</strong> You need to understand reset modes before using them on real work.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Use reset --soft</li>
+<li>Use reset mixed/default</li>
+<li>Use reset --hard in a sandbox</li>
+<li>Observe effects</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create three tiny commits in a temporary branch.</li>
+<li>Try --soft reset and inspect status.</li>
+<li>Recommit, try mixed reset, inspect status.</li>
+<li>Recommit, try --hard reset, inspect status.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Create a safe branch for reset practice
+git switch -c practice/reset-modes
+# Create the first reset practice commit
+echo &quot;one&quot; &gt; reset-demo.txt
+git add reset-demo.txt
+git commit -m &quot;test: add reset demo one&quot;
+# Create the second reset practice commit
+echo &quot;two&quot; &gt;&gt; reset-demo.txt
+git add reset-demo.txt
+git commit -m &quot;test: add reset demo two&quot;
+# Move HEAD back one commit but keep changes staged
+git reset --soft HEAD~1
+# Inspect staged changes after soft reset
+git status
+# Recreate the second commit
+git commit -m &quot;test: add reset demo two again&quot;
+# Move HEAD back one commit and keep changes unstaged
+git reset HEAD~1
+# Inspect unstaged changes after mixed reset
+git status
+# Recreate the second commit again
+git add reset-demo.txt
+git commit -m &quot;test: add reset demo two final&quot;
+# Move HEAD back one commit and discard working tree changes
+git reset --hard HEAD~1
+# Inspect the clean state after hard reset
+git status
+# Return to main when done
+git switch main</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>Soft reset leaves changes staged.</li>
+<li>Mixed reset leaves changes unstaged.</li>
+<li>Hard reset discards the commit changes from the working tree.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Using --hard on uncommitted work you need</li>
+<li>Resetting shared history without understanding consequences</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-26">
+            <div class="assignment-head">
+                <span class="badge">Assignment 26</span>
+                <h3>Revert a public commit safely</h3>
+            </div>
+            <p><strong>Scenario:</strong> A bad commit was already pushed, so you need a new commit that undoes it instead of rewriting history.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Use git revert</li>
+<li>Preserve shared history</li>
+<li>Push safe undo commits</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create and commit a bad change.</li>
+<li>Push it if using the local remote.</li>
+<li>Revert the bad commit.</li>
+<li>Inspect history.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Ensure you are on main
+git switch main
+# Add a bad public change
+echo &quot;BAD PUBLIC CHANGE&quot; &gt; bad-public.txt
+# Stage the bad public change
+git add bad-public.txt
+# Commit the bad public change
+git commit -m &quot;feat: add bad public change&quot;
+# Push the bad commit to the remote if origin exists
+git push
+# Create a new commit that reverses the bad commit
+git revert HEAD --no-edit
+# Inspect the two commits in history
+git log --oneline -3
+# Push the safe revert commit
+git push</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>bad-public.txt should be removed or reverted depending on the original change.</li>
+<li>History should contain both the bad commit and the revert commit.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Using reset on commits already pulled by teammates</li>
+<li>Thinking revert deletes history instead of adding an undo commit</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-27">
+            <div class="assignment-head">
+                <span class="badge">Assignment 27</span>
+                <h3>Recover a commit using reflog</h3>
+            </div>
+            <p><strong>Scenario:</strong> You reset to an older commit and now want to recover the commit you thought you lost.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Use git reflog</li>
+<li>Find previous HEAD</li>
+<li>Recover with branch or reset</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create a commit on a practice branch.</li>
+<li>Reset away from it.</li>
+<li>Find it in reflog.</li>
+<li>Recover it into a new branch.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Create a recovery practice branch
+git switch -c practice/reflog-recovery
+# Create a commit that will seem lost
+echo &quot;recover me&quot; &gt; recover-me.txt
+git add recover-me.txt
+git commit -m &quot;test: create recoverable commit&quot;
+# Save the commit hash for learning purposes
+git rev-parse --short HEAD
+# Reset away from the latest commit
+git reset --hard HEAD~1
+# Show recent HEAD movements
+git reflog --oneline
+# Create a recovery branch from the reflog entry or saved hash
+git switch -c recovered/reflog HEAD@{1}
+# Confirm the recovered file exists
+ls
+# Return to main after practice
+git switch main</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>recover-me.txt should exist on recovered/reflog.</li>
+<li>git reflog should show the commit before the reset.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Waiting too long and relying on reflog forever</li>
+<li>Recovering the wrong reflog entry without inspecting it</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-28">
+            <div class="assignment-head">
+                <span class="badge">Assignment 28</span>
+                <h3>Cherry-pick one useful commit</h3>
+            </div>
+            <p><strong>Scenario:</strong> Another branch contains several experiments, but only one commit is useful for main.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Use git cherry-pick</li>
+<li>Move one commit between branches</li>
+<li>Resolve cherry-pick conflicts if needed</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create a branch with two commits.</li>
+<li>Switch to main.</li>
+<li>Cherry-pick only the useful commit.</li>
+<li>Verify the unwanted commit did not move.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Create a branch for mixed experiments
+git switch -c experiment/mixed-commits
+# Create a useful commit
+echo &quot;Useful change&quot; &gt; useful.txt
+git add useful.txt
+git commit -m &quot;feat: add useful change&quot;
+# Store the useful commit hash in the terminal output
+git rev-parse --short HEAD
+# Create an unwanted commit
+echo &quot;Unwanted experiment&quot; &gt; unwanted.txt
+git add unwanted.txt
+git commit -m &quot;test: add unwanted experiment&quot;
+# Switch back to main
+git switch main
+# Cherry-pick only the useful commit by replacing HASH with the useful commit hash
+git cherry-pick HASH
+# Confirm useful.txt exists and unwanted.txt does not
+ls</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>main should contain useful.txt only.</li>
+<li>git log should show the cherry-picked commit on main with a new commit hash.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Cherry-picking the wrong commit hash</li>
+<li>Cherry-picking a range when you only wanted one commit</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-29">
+            <div class="assignment-head">
+                <span class="badge">Assignment 29</span>
+                <h3>Restore one file from an older commit</h3>
+            </div>
+            <p><strong>Scenario:</strong> A file was changed too much, and you want only that file back from yesterday&#x27;s version.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Use git restore --source</li>
+<li>Restore selected path</li>
+<li>Commit restoration</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Find an older commit containing README.md.</li>
+<li>Restore README.md from that commit into the working tree.</li>
+<li>Review the diff.</li>
+<li>Commit the restoration.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Show recent commits so you can choose an older source
+git log --oneline -- README.md
+# Restore README.md from the previous commit as a practice example
+git restore --source=HEAD~1 -- README.md
+# Review what changed after restoring the older version
+git diff README.md
+# Stage the restored file
+git add README.md
+# Commit the restoration
+git commit -m &quot;fix: restore previous readme version</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>Only README.md should be changed by this operation.</li>
+<li>git show --name-only HEAD should list README.md.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Restoring the whole tree when you only need one file</li>
+<li>Choosing the wrong source commit</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-30">
+            <div class="assignment-head">
+                <span class="badge">Assignment 30</span>
+                <h3>Use git clean safely</h3>
+            </div>
+            <p><strong>Scenario:</strong> Your folder has generated files that are not tracked and not ignored, and you want to remove them safely.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Preview clean</li>
+<li>Remove untracked files</li>
+<li>Understand dangerous cleanup</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create temporary untracked files.</li>
+<li>Preview what clean would delete.</li>
+<li>Delete untracked files only after preview.</li>
+<li>Confirm tracked files remain.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Create untracked temporary files
+echo &quot;temporary&quot; &gt; temp-output.txt
+mkdir temp-folder
+# Create a file inside the untracked folder
+echo &quot;temporary nested&quot; &gt; temp-folder/output.txt
+# Preview untracked files and directories that would be removed
+git clean -nd
+# Remove untracked files and directories after preview
+git clean -fd
+# Confirm the working tree is clean
+git status</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>temp-output.txt and temp-folder should be removed.</li>
+<li>Tracked project files should remain.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Running git clean -fd without previewing with -n</li>
+<li>Expecting Git to recover untracked files after cleaning</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        </section><section class='level' id='level-4---rebase-and-history-shaping'><h2>Level 4 - Rebase and History Shaping</h2>
+        <article class="card assignment" id="assignment-31">
+            <div class="assignment-head">
+                <span class="badge">Assignment 31</span>
+                <h3>Rebase a feature branch onto main</h3>
+            </div>
+            <p><strong>Scenario:</strong> Main moved forward while you were building a feature, and you want your feature replayed on top of the latest main.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Use git rebase</li>
+<li>Understand linear history</li>
+<li>Resolve rebase conflicts if they appear</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create feature/rebase-demo from main.</li>
+<li>Commit a feature change.</li>
+<li>Move main forward separately.</li>
+<li>Rebase the feature branch onto main.</li>
+<li>Merge the rebased branch.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Start from main
+git switch main
+# Create and switch to a feature branch
+git switch -c feature/rebase-demo
+# Add a feature commit
+echo &quot;Rebase feature&quot; &gt; rebase-feature.md
+git add rebase-feature.md
+git commit -m &quot;feat: add rebase feature&quot;
+# Switch back to main
+git switch main
+# Move main forward with an independent change
+echo &quot;Main moved forward&quot; &gt; main-progress.md
+git add main-progress.md
+git commit -m &quot;docs: record main progress&quot;
+# Switch back to the feature branch
+git switch feature/rebase-demo
+# Replay feature commits on top of the latest main
+git rebase main
+# Switch to main for integration
+git switch main
+# Merge should now be fast-forward or simple
+git merge feature/rebase-demo
+# Inspect the linear history
+git log --oneline --graph --decorate --all</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>The feature commit should appear after main-progress in history.</li>
+<li>The graph should be mostly linear after rebase and merge.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Rebasing commits already shared with others without coordination</li>
+<li>Running rebase from the wrong branch</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-32">
+            <div class="assignment-head">
+                <span class="badge">Assignment 32</span>
+                <h3>Squash small commits with interactive rebase</h3>
+            </div>
+            <p><strong>Scenario:</strong> Your branch has many tiny fixup commits and you want one clean commit before review.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Use interactive rebase</li>
+<li>Squash commits</li>
+<li>Edit commit messages</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create a branch with three tiny commits.</li>
+<li>Start interactive rebase for the last three commits.</li>
+<li>Squash them into one commit.</li>
+<li>Verify the cleaned history.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Create a branch for squash practice
+git switch -c practice/squash-demo
+# Create the first tiny commit
+echo &quot;line one&quot; &gt; squash.md
+git add squash.md
+git commit -m &quot;docs: add squash line one&quot;
+# Create the second tiny commit
+echo &quot;line two&quot; &gt;&gt; squash.md
+git add squash.md
+git commit -m &quot;fix: add missing squash line two&quot;
+# Create the third tiny commit
+echo &quot;line three&quot; &gt;&gt; squash.md
+git add squash.md
+git commit -m &quot;fix: add missing squash line three&quot;
+# Open interactive rebase for the last three commits
+git rebase -i HEAD~3
+# In the editor, keep the first commit as pick and change the next two from pick to squash
+# Save the editor file to continue the rebase
+# Edit the final combined commit message when Git asks
+# Confirm the branch now has one clean commit for squash.md
+git log --oneline --stat -3</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>The three tiny commits should become one commit.</li>
+<li>squash.md should still contain all three lines.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Interactive rebase on public commits without coordination</li>
+<li>Accidentally dropping a commit in the rebase todo list</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-33">
+            <div class="assignment-head">
+                <span class="badge">Assignment 33</span>
+                <h3>Reword an old commit message</h3>
+            </div>
+            <p><strong>Scenario:</strong> A recent local commit message is unclear and needs to be fixed before pushing.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Use reword in interactive rebase</li>
+<li>Edit local history</li>
+<li>Verify message</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create two commits with one poor message.</li>
+<li>Run interactive rebase over both commits.</li>
+<li>Mark the poor message as reword.</li>
+<li>Save a better message.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Create a branch for reword practice
+git switch -c practice/reword-demo
+# Create a commit with a bad message
+echo &quot;reword one&quot; &gt; reword.md
+git add reword.md
+git commit -m &quot;stuff&quot;
+# Create a second normal commit
+echo &quot;reword two&quot; &gt;&gt; reword.md
+git add reword.md
+git commit -m &quot;docs: add second reword line&quot;
+# Start interactive rebase for the last two commits
+git rebase -i HEAD~2
+# Change pick to reword for the commit whose message says stuff
+# Save the todo list and enter a better commit message when prompted
+# Inspect the corrected history
+git log --oneline -5</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>The bad message should be replaced with a meaningful message.</li>
+<li>File content should not change just because the message changed.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Using reword when you meant edit content</li>
+<li>Rewriting commits that others already based work on</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-34">
+            <div class="assignment-head">
+                <span class="badge">Assignment 34</span>
+                <h3>Resolve a rebase conflict</h3>
+            </div>
+            <p><strong>Scenario:</strong> Your feature branch and main changed the same line, and the conflict appears during rebase instead of merge.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Understand conflict during rebase</li>
+<li>Resolve conflict</li>
+<li>Continue rebase</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create a file on main.</li>
+<li>Change it on feature/rebase-conflict.</li>
+<li>Change it differently on main.</li>
+<li>Rebase feature branch onto main.</li>
+<li>Resolve and continue.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Start from main
+git switch main
+# Create the shared conflict file
+echo &quot;Mode: original&quot; &gt; rebase-conflict.md
+git add rebase-conflict.md
+git commit -m &quot;docs: add rebase conflict demo&quot;
+# Create the feature branch
+git switch -c feature/rebase-conflict
+# Change the shared line on the feature branch
+printf &quot;Mode: feature\n&quot; &gt; rebase-conflict.md
+git add rebase-conflict.md
+git commit -m &quot;docs: change mode on feature&quot;
+# Return to main
+git switch main
+# Change the same line differently on main
+printf &quot;Mode: main\n&quot; &gt; rebase-conflict.md
+git add rebase-conflict.md
+git commit -m &quot;docs: change mode on main&quot;
+# Rebase the feature branch onto main
+git switch feature/rebase-conflict
+git rebase main
+# Resolve the conflicted file manually
+printf &quot;Mode: combined\n&quot; &gt; rebase-conflict.md
+# Stage the resolved file
+git add rebase-conflict.md
+# Continue the rebase after resolving
+git rebase --continue
+# Inspect the result
+git log --oneline --graph --decorate --all -8</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>The rebase should complete successfully.</li>
+<li>rebase-conflict.md should contain the chosen final line.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Using git commit during rebase conflict instead of git rebase --continue</li>
+<li>Forgetting to stage resolved files</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-35">
+            <div class="assignment-head">
+                <span class="badge">Assignment 35</span>
+                <h3>Abort a rebase safely</h3>
+            </div>
+            <p><strong>Scenario:</strong> A rebase becomes messy and you want to return to the exact state before starting it.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Use git rebase --abort</li>
+<li>Recover from complex conflicts</li>
+<li>Know when to stop</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Start any rebase that causes a conflict.</li>
+<li>Inspect status.</li>
+<li>Abort the rebase.</li>
+<li>Verify the branch returned to its pre-rebase state.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Check the current state during a conflicted rebase
+git status
+# Stop the rebase and return to the branch state before rebase started
+git rebase --abort
+# Confirm there is no rebase in progress
+git status
+# Inspect the branch graph after abort
+git log --oneline --graph --decorate --all -8</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>git status should no longer mention rebase in progress.</li>
+<li>Your feature branch should still exist with its original commits.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Trying random reset commands instead of using the built-in abort</li>
+<li>Aborting without understanding that conflict resolutions will be discarded</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        </section><section class='level' id='level-5---professional-workflows'><h2>Level 5 - Professional Workflows</h2>
+        <article class="card assignment" id="assignment-36">
+            <div class="assignment-head">
+                <span class="badge">Assignment 36</span>
+                <h3>Create an annotated release tag</h3>
+            </div>
+            <p><strong>Scenario:</strong> You are preparing a release and want a tag with a message and metadata.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Create annotated tags</li>
+<li>Push tags</li>
+<li>Inspect tag metadata</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create v1.0.0 as an annotated tag.</li>
+<li>Show the tag details.</li>
+<li>Push the tag to origin.</li>
+<li>List tags.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Switch to the release branch or main branch
+git switch main
+# Create an annotated release tag at the current commit
+git tag -a v1.0.0 -m &quot;release: version 1.0.0&quot;
+# Show tag object details and the tagged commit
+git show v1.0.0
+# Push the specific tag to origin
+git push origin v1.0.0
+# List all local tags
+git tag --list</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>git show v1.0.0 should show a tag message and commit details.</li>
+<li>The tag should exist on the remote if origin is configured.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Creating duplicate release tags casually</li>
+<li>Forgetting tags are not always pushed with normal branch pushes</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-37">
+            <div class="assignment-head">
+                <span class="badge">Assignment 37</span>
+                <h3>Hotfix workflow from a release tag</h3>
+            </div>
+            <p><strong>Scenario:</strong> Production has a bug at v1.0.0, and you need a focused hotfix branch.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Branch from tag</li>
+<li>Commit hotfix</li>
+<li>Merge back</li>
+<li>Tag patch release</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create hotfix/v1.0.1 from v1.0.0.</li>
+<li>Make a bug-fix commit.</li>
+<li>Merge hotfix into main.</li>
+<li>Tag v1.0.1.</li>
+<li>Push branch and tags.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Create a hotfix branch starting at the v1.0.0 release tag
+git switch -c hotfix/v1.0.1 v1.0.0
+# Add a focused hotfix note
+echo &quot;Hotfix applied&quot; &gt; hotfix.md
+# Stage the hotfix
+git add hotfix.md
+# Commit the hotfix
+git commit -m &quot;fix: apply production hotfix&quot;
+# Switch back to main
+git switch main
+# Merge the hotfix into main with a merge commit
+git merge --no-ff hotfix/v1.0.1 -m &quot;merge: integrate v1.0.1 hotfix&quot;
+# Create a patch release tag
+git tag -a v1.0.1 -m &quot;release: version 1.0.1&quot;
+# Push main to origin
+git push origin main
+# Push the new release tag
+git push origin v1.0.1
+# Delete the local hotfix branch after merge
+git branch -d hotfix/v1.0.1</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>main should include hotfix.md.</li>
+<li>git tag should list v1.0.0 and v1.0.1.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Starting the hotfix from current main instead of the production tag when production differs</li>
+<li>Forgetting to merge the hotfix back into active development</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-38">
+            <div class="assignment-head">
+                <span class="badge">Assignment 38</span>
+                <h3>Find a bug-introducing commit with bisect</h3>
+            </div>
+            <p><strong>Scenario:</strong> A test used to pass but now fails, and you need Git to binary-search the bad commit.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Use git bisect</li>
+<li>Mark good and bad commits</li>
+<li>Reset bisect state</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create a branch with several commits where one introduces the word BUG.</li>
+<li>Use git bisect to find the first bad commit manually.</li>
+<li>Reset bisect when finished.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Create a safe bisect practice branch
+git switch -c practice/bisect-demo
+# Create a known good version
+echo &quot;version 1&quot; &gt; app-state.txt
+git add app-state.txt
+git commit -m &quot;test: add good version one&quot;
+# Create another good version
+echo &quot;version 2&quot; &gt;&gt; app-state.txt
+git add app-state.txt
+git commit -m &quot;test: add good version two&quot;
+# Introduce a bad line
+echo &quot;BUG&quot; &gt;&gt; app-state.txt
+git add app-state.txt
+git commit -m &quot;test: introduce bug marker&quot;
+# Add later noise after the bug
+echo &quot;version 4&quot; &gt;&gt; app-state.txt
+git add app-state.txt
+git commit -m &quot;test: add later version four&quot;
+# Start binary search
+git bisect start
+# Mark the current commit as bad because BUG exists
+git bisect bad
+# Mark the first commit as good by replacing GOOD_HASH with its hash
+git bisect good GOOD_HASH
+# At each checkout, test whether BUG exists in app-state.txt
+# Mark the current commit bad when BUG exists
+git bisect bad
+# Mark the current commit good when BUG does not exist
+git bisect good
+# End bisect and return to the original branch state
+git bisect reset</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>Git should identify the commit named test: introduce bug marker.</li>
+<li>git bisect reset should return you to the branch tip.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Forgetting to reset after bisect</li>
+<li>Marking commits good or bad without running the test</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-39">
+            <div class="assignment-head">
+                <span class="badge">Assignment 39</span>
+                <h3>Use bisect with an automated test script</h3>
+            </div>
+            <p><strong>Scenario:</strong> You want Git to run the test automatically instead of manually marking commits.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Write a test script</li>
+<li>Use git bisect run</li>
+<li>Interpret exit codes</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create a script that fails when BUG exists.</li>
+<li>Run git bisect start.</li>
+<li>Use git bisect run with the script.</li>
+<li>Reset bisect.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Create a simple test script that fails if BUG is found
+printf &quot;#!/bin/sh\n! grep -q BUG app-state.txt\n&quot; &gt; test-no-bug.sh
+# Make the test script executable
+chmod +x test-no-bug.sh
+# Start bisect mode
+git bisect start
+# Mark the current commit as bad
+git bisect bad
+# Mark a known good commit by replacing GOOD_HASH with a real hash
+git bisect good GOOD_HASH
+# Let Git run the test script across candidate commits
+git bisect run ./test-no-bug.sh
+# Exit bisect mode after Git reports the first bad commit
+git bisect reset</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>The script should return zero for good commits and non-zero for bad commits.</li>
+<li>Git should report the first commit where BUG appears.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Writing a flaky test script</li>
+<li>Using the wrong good commit baseline</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-40">
+            <div class="assignment-head">
+                <span class="badge">Assignment 40</span>
+                <h3>Use worktree for parallel tasks</h3>
+            </div>
+            <p><strong>Scenario:</strong> You need to keep one branch open while working on a hotfix in another folder.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Create linked worktree</li>
+<li>Work on two branches at once</li>
+<li>Remove worktree safely</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create a new worktree folder for hotfix/worktree-demo.</li>
+<li>Commit inside that folder.</li>
+<li>Return to the main folder and inspect branches.</li>
+<li>Remove the worktree.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># From inside daily-notes, create a sibling worktree with a new branch
+git worktree add ../daily-notes-hotfix -b hotfix/worktree-demo
+# Move into the new worktree folder
+cd ../daily-notes-hotfix
+# Add a hotfix file in the separate worktree
+echo &quot;Worktree hotfix&quot; &gt; worktree-hotfix.md
+# Stage the hotfix file
+git add worktree-hotfix.md
+# Commit from the worktree branch
+git commit -m &quot;fix: add worktree hotfix&quot;
+# Return to the original worktree
+cd ../daily-notes
+# List all linked worktrees
+git worktree list
+# Remove the extra worktree folder when done
+git worktree remove ../daily-notes-hotfix</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>git worktree list should show the extra folder before removal.</li>
+<li>The hotfix branch should still exist after removing the worktree.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Manually deleting worktree folders instead of using git worktree remove</li>
+<li>Trying to check out the same branch in two worktrees</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-41">
+            <div class="assignment-head">
+                <span class="badge">Assignment 41</span>
+                <h3>Create and apply a patch file</h3>
+            </div>
+            <p><strong>Scenario:</strong> You need to send a change as a patch file instead of pushing to a remote.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Create diff patch</li>
+<li>Apply patch</li>
+<li>Review patch before apply</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create a change on a branch.</li>
+<li>Generate a patch file.</li>
+<li>Switch to another branch.</li>
+<li>Apply the patch.</li>
+<li>Commit the applied change.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Create a branch for patch source work
+git switch -c practice/patch-source
+# Add patch content
+echo &quot;Patch content&quot; &gt; patch-demo.md
+# Stage the patch content
+git add patch-demo.md
+# Commit the patch source change
+git commit -m &quot;feat: add patch demo&quot;
+# Create a patch file from the latest commit
+git format-patch -1 HEAD --stdout &gt; ../patch-demo.patch
+# Switch back to main
+git switch main
+# Preview the patch before applying
+cat ../patch-demo.patch
+# Apply the patch as a commit with author and message metadata
+git am ../patch-demo.patch
+# Inspect the applied patch commit
+git log --oneline -3</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>patch-demo.md should appear on main after git am.</li>
+<li>The commit message should come from the patch.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Applying patches without reading them</li>
+<li>Using git apply when you wanted to preserve commit metadata with git am</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-42">
+            <div class="assignment-head">
+                <span class="badge">Assignment 42</span>
+                <h3>Use blame and show to investigate a line</h3>
+            </div>
+            <p><strong>Scenario:</strong> You found a confusing line and need to learn when and why it was introduced.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Use git blame</li>
+<li>Inspect responsible commit</li>
+<li>Understand code archaeology</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Run blame on README.md or main.js.</li>
+<li>Copy a commit hash from the output.</li>
+<li>Show that commit.</li>
+<li>Summarize why the line changed.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Show the last commit responsible for each line in README.md
+git blame README.md
+# Inspect a specific blamed commit by replacing HASH with the commit hash
+git show HASH
+# Show only changed files for that commit
+git show --name-status HASH
+# Show surrounding history for README.md
+git log --oneline -- README.md</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>You should identify the commit hash responsible for a line.</li>
+<li>You should understand the commit message and diff related to that line.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Using blame to blame people instead of understanding context</li>
+<li>Ignoring surrounding commits and assuming one line tells the full story</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-43">
+            <div class="assignment-head">
+                <span class="badge">Assignment 43</span>
+                <h3>Handle detached HEAD and save work</h3>
+            </div>
+            <p><strong>Scenario:</strong> You checked out an old commit, made changes, and now Git says you are in detached HEAD state.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Recognize detached HEAD</li>
+<li>Create a branch to save work</li>
+<li>Return to main safely</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Check out an older commit by hash.</li>
+<li>Create a change and commit it while detached.</li>
+<li>Save it by creating a branch.</li>
+<li>Switch back to main.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># View recent commits and choose an older hash
+git log --oneline -5
+# Check out the older commit by replacing OLD_HASH with a real hash
+git switch --detach OLD_HASH
+# Confirm detached HEAD state
+git status
+# Make a commit while detached for practice
+echo &quot;Detached experiment&quot; &gt; detached.md
+git add detached.md
+git commit -m &quot;test: add detached experiment&quot;
+# Save the detached commit by creating a branch at the current commit
+git switch -c saved/detached-experiment
+# Return to main safely
+git switch main
+# Confirm the saved branch exists
+git branch --list saved/detached-experiment</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>The detached commit should be reachable through saved/detached-experiment.</li>
+<li>main should remain unchanged until you merge or cherry-pick.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Switching away from detached HEAD without saving useful commits</li>
+<li>Panicking when detached HEAD is only an informational state</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-44">
+            <div class="assignment-head">
+                <span class="badge">Assignment 44</span>
+                <h3>Simulate a fork-style contribution with two remotes</h3>
+            </div>
+            <p><strong>Scenario:</strong> You want to understand upstream and origin like an open-source workflow.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Use multiple remotes</li>
+<li>Fetch upstream</li>
+<li>Push to origin</li>
+<li>Keep fork updated</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create upstream.git as the main project remote.</li>
+<li>Clone it as my-fork-working-copy.</li>
+<li>Rename/add remotes to simulate origin and upstream.</li>
+<li>Fetch upstream and push to origin.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Move above your current project folder
+cd ..
+# Create a bare upstream repository
+git init --bare upstream.git
+# Clone upstream into a maintainer working copy
+git clone upstream.git upstream-maintainer
+# Enter the maintainer copy
+cd upstream-maintainer
+# Create initial upstream content
+echo &quot;Upstream project&quot; &gt; README.md
+git add README.md
+git commit -m &quot;docs: initialize upstream project&quot;
+git push -u origin main
+# Return above the folders
+cd ..
+# Create a bare fork repository by cloning upstream as bare
+git clone --bare upstream.git my-fork.git
+# Clone your fork as your working copy
+git clone my-fork.git my-fork-working-copy
+# Enter your fork working copy
+cd my-fork-working-copy
+# Add upstream remote pointing to the original project
+git remote add upstream ../upstream.git
+# List both remotes
+git remote -v
+# Fetch changes from upstream
+git fetch upstream
+# Create a contribution branch
+git switch -c feature/open-source-practice
+# Add contribution content
+echo &quot;Contribution idea&quot; &gt; contribution.md
+git add contribution.md
+git commit -m &quot;docs: add contribution idea&quot;
+# Push your contribution branch to your fork origin
+git push -u origin feature/open-source-practice</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>git remote -v should show origin and upstream.</li>
+<li>Your contribution branch should be pushed to origin, not upstream.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Pushing directly to upstream when you meant origin</li>
+<li>Not fetching upstream before starting new work</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-45">
+            <div class="assignment-head">
+                <span class="badge">Assignment 45</span>
+                <h3>Accidentally committed a secret before pushing</h3>
+            </div>
+            <p><strong>Scenario:</strong> You committed a private-looking value locally, noticed immediately, and have not pushed yet.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Remove secret from latest commit</li>
+<li>Update .gitignore</li>
+<li>Amend safely before push</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create a fake local.secret file and commit it accidentally.</li>
+<li>Remove it from the Git index but keep or delete the local file.</li>
+<li>Add it to .gitignore.</li>
+<li>Amend the commit before pushing.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Create a fake secret file for practice only
+echo &quot;TOKEN=fake-practice-token&quot; &gt; local.secret
+# Accidentally stage the fake secret
+git add local.secret
+# Accidentally commit the fake secret
+git commit -m &quot;chore: add local secret by mistake&quot;
+# Remove the file from Git tracking but keep it locally
+git rm --cached local.secret
+# Add the secret file pattern to .gitignore
+echo &quot;local.secret&quot; &gt;&gt; .gitignore
+# Stage the ignore rule and index removal
+git add .gitignore
+# Amend the latest commit so the secret is not in that commit
+git commit --amend -m &quot;chore: ignore local secret file&quot;
+# Confirm the secret file is not tracked
+git status --ignored
+# Confirm the latest commit does not include local.secret
+git show --name-only --oneline HEAD</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>local.secret should not appear in git show --name-only HEAD.</li>
+<li>git status --ignored should show local.secret as ignored.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Assuming .gitignore removes files already committed</li>
+<li>Using fake practice secrets in real services</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-46">
+            <div class="assignment-head">
+                <span class="badge">Assignment 46</span>
+                <h3>Accidentally pushed a secret: safe team response</h3>
+            </div>
+            <p><strong>Scenario:</strong> A secret-like value was pushed to a shared remote, so history rewriting alone is not enough operationally.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Stop exposure</li>
+<li>Rotate secret</li>
+<li>Coordinate cleanup</li>
+<li>Avoid unsafe assumptions</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Write the response plan as a checklist.</li>
+<li>Remove the secret from current code.</li>
+<li>Commit the removal.</li>
+<li>Coordinate credential rotation outside Git.</li>
+<li>Only rewrite history with team agreement and repository-owner tooling.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Remove the secret from the working tree or replace it with a safe placeholder
+printf &quot;TOKEN=read-from-environment\n&quot; &gt; local.secret.example
+# Stop tracking the actual secret file if it is tracked
+git rm --cached local.secret
+# Add local secret file to ignore rules
+echo &quot;local.secret&quot; &gt;&gt; .gitignore
+# Stage safe files and ignore rules
+git add .gitignore local.secret.example
+# Commit the cleanup in shared history
+git commit -m &quot;fix: remove committed local secret reference&quot;
+# Push the cleanup commit to shared remote
+git push
+# Rotate or revoke the exposed credential in the real provider outside Git
+# Coordinate with the team before any force-push or history rewrite
+# Ask repository admins to run secret scanning and history cleanup if required</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>The current branch should no longer contain the secret in normal files.</li>
+<li>The real credential should be rotated or revoked outside Git.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Only deleting the file and thinking the exposed secret is safe</li>
+<li>Force-pushing rewritten history without team coordination</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-47">
+            <div class="assignment-head">
+                <span class="badge">Assignment 47</span>
+                <h3>Create helpful Git aliases</h3>
+            </div>
+            <p><strong>Scenario:</strong> You forget long commands, so you want short aliases for daily inspection.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Configure aliases</li>
+<li>Use short commands</li>
+<li>Keep aliases readable</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Create aliases for status, compact log, graph log, and staged diff.</li>
+<li>Use each alias.</li>
+<li>List Git config aliases.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Create a short alias for git status
+git config --global alias.st status
+# Create a compact one-line log alias
+git config --global alias.lg &quot;log --oneline --decorate&quot;
+# Create a graph history alias
+git config --global alias.tree &quot;log --oneline --graph --decorate --all&quot;
+# Create a staged diff alias
+git config --global alias.ds &quot;diff --staged&quot;
+# Use the status alias
+git st
+# Use the compact log alias
+git lg
+# Use the graph alias
+git tree
+# Use the staged diff alias
+git ds
+# List global aliases
+git config --global --get-regexp &#x27;^alias\.&#x27;</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>git st should behave like git status.</li>
+<li>git tree should show a graph view.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Creating aliases so cryptic you forget them too</li>
+<li>Overusing aliases before learning the full commands</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        
+        <article class="card assignment" id="assignment-48">
+            <div class="assignment-head">
+                <span class="badge">Assignment 48</span>
+                <h3>Practice a complete feature workflow</h3>
+            </div>
+            <p><strong>Scenario:</strong> You want a full end-to-end routine similar to professional team work.</p>
+            <div class="grid two">
+                <div>
+                    <h4>Objectives</h4>
+                    <ul><li>Sync main</li>
+<li>Branch</li>
+<li>Commit</li>
+<li>Rebase</li>
+<li>Merge</li>
+<li>Push</li>
+<li>Delete branch</li></ul>
+                </div>
+                <div>
+                    <h4>Your tasks</h4>
+                    <ol><li>Update main from origin.</li>
+<li>Create a feature branch.</li>
+<li>Make two clean commits.</li>
+<li>Rebase on updated main.</li>
+<li>Merge into main.</li>
+<li>Push main and clean up.</li></ol>
+                </div>
+            </div>
+            <details>
+                <summary>Show answer and command sequence</summary>
+                <pre><code># Switch to main before starting work
+git switch main
+# Fetch latest remote state
+git fetch origin
+# Update local main from origin main
+git pull --ff-only
+# Create a focused feature branch
+git switch -c feature/complete-workflow
+# Create the first focused change
+echo &quot;Workflow step one&quot; &gt; workflow.md
+git add workflow.md
+git commit -m &quot;docs: add workflow step one&quot;
+# Create the second focused change
+echo &quot;Workflow step two&quot; &gt;&gt; workflow.md
+git add workflow.md
+git commit -m &quot;docs: add workflow step two&quot;
+# Rebase feature branch onto the latest main
+git fetch origin
+git rebase main
+# Return to main for integration
+git switch main
+# Merge the feature branch
+git merge --no-ff feature/complete-workflow -m &quot;merge: integrate complete workflow practice&quot;
+# Push updated main
+git push origin main
+# Delete local feature branch
+git branch -d feature/complete-workflow</code></pre>
+                <div class="grid two">
+                    <div>
+                        <h4>Success checks</h4>
+                        <ul><li>main should contain workflow.md.</li>
+<li>The feature branch should be deleted locally after merge.</li>
+<li>git log --graph should show the integration clearly.</li></ul>
+                    </div>
+                    <div>
+                        <h4>Common pitfalls</h4>
+                        <ul><li>Starting from stale main</li>
+<li>Skipping tests before merge</li>
+<li>Deleting remote branches without confirming team workflow</li></ul>
+                    </div>
+                </div>
+            </details>
+        </article>
+        </section>
+
+        <section id="memory-drills" class="card">
+            <h2>Five-minute memory drills</h2>
+            <p>Use these when you do not have time for a full assignment.</p>
+            <div class="grid three">
+                <div>
+                    <h4>Drill A: inspect</h4>
+                    <pre><code># Check current branch and file state
+git status
+# Review unstaged changes
+git diff
+# Review compact history
+git log --oneline -5</code></pre>
+                </div>
+                <div>
+                    <h4>Drill B: commit</h4>
+                    <pre><code># Stage one selected file
+git add file.txt
+# Review what will be committed
+git diff --staged
+# Commit with a useful message
+git commit -m "docs: describe the change"</code></pre>
+                </div>
+                <div>
+                    <h4>Drill C: branch</h4>
+                    <pre><code># Create and switch to a branch
+git switch -c feature/small-practice
+# Return to main
+git switch main
+# Delete the branch if fully merged
+git branch -d feature/small-practice</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section id="sources" class="card">
+            <h2>References used</h2>
+            <p>This guide is based on the official Git reference, the official Pro Git book, and Git's everyday command guide. Use these when you want deeper explanations beyond the assignments.</p>
+            <ul>
+                <li><a href="https://git-scm.com/docs/git">Official Git command reference</a></li>
+                <li><a href="https://git-scm.com/docs">Official Git reference index</a></li>
+                <li><a href="https://git-scm.com/book/en/v2">Pro Git book</a></li>
+                <li><a href="https://git-scm.com/docs/everyday">Everyday Git documentation</a></li>
+                <li><a href="https://git-scm.com/docs/git-restore">git-restore documentation</a></li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>Created as a daily Git memory-retention practice document. Keep it local, repeat the labs, and rebuild muscle memory by typing commands from scratch.</p>
+        </footer>
+    </main>
+</body>
+</html>
